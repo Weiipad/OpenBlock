@@ -13,8 +13,12 @@ namespace OpenBlock.Input.Handler
 {
     public class TouchHandler : IInputHandler
     {
-        private float placeDigDivTime = 0.5f;
+        private const float PLACE_DIG_DIV_TIME = 0.5f;
         private List<int> touchIdOnUI = new List<int>();
+        private List<int> touchTriggeredDigStart = new List<int>();
+        private Vector2 smoothDelta = Vector2.zero;
+        private Vector2 deltaTarget;
+
         public void HandleInputs(ref InputActions actions)
         {
             InputManager input = InputManager.Instance;
@@ -23,8 +27,13 @@ namespace OpenBlock.Input.Handler
             foreach (var touch in Touch.activeTouches)
             {
                 bool uiTouch = touchIdOnUI.Contains(touch.touchId);
+                bool digTrig = touch.inProgress && (Time.realtimeSinceStartup - touch.startTime) > PLACE_DIG_DIV_TIME;
 
-                if (!uiTouch && (Time.realtimeSinceStartup - touch.startTime) > placeDigDivTime && touch.inProgress) actions.digStart?.Invoke();
+                if (digTrig && !uiTouch && !touchTriggeredDigStart.Contains(touch.touchId))
+                {
+                    actions.digStart?.Invoke();
+                    touchTriggeredDigStart.Add(touch.touchId);
+                }
 
                 switch (touch.phase)
                 {
@@ -36,10 +45,16 @@ namespace OpenBlock.Input.Handler
                         break;
 
                     case TouchPhase.Moved:
+                        if (!uiTouch)
+                        {
+                            deltaTarget = touch.delta;
+                        }
+                        break;
+
                     case TouchPhase.Stationary:
                         if (!uiTouch)
                         {
-                            actions.look?.Invoke(touch.delta);
+                            smoothDelta *= 0.4f;
                         }
                         break;
 
@@ -51,8 +66,17 @@ namespace OpenBlock.Input.Handler
                         }
                         else
                         {
-                            if ((touch.time - touch.startTime) < placeDigDivTime) actions.place?.Invoke();
-                            else actions.digEnd?.Invoke();
+                            if ((touch.time - touch.startTime) < PLACE_DIG_DIV_TIME)
+                            {
+                                actions.place?.Invoke();
+                            }
+                            else
+                            {
+                                actions.digEnd?.Invoke();
+                                touchTriggeredDigStart.Remove(touch.touchId);
+                            }
+                            smoothDelta *= 0.05f;
+                            deltaTarget = Vector2.zero;
                         }
                         break;
 
@@ -61,12 +85,26 @@ namespace OpenBlock.Input.Handler
                         break;
                 }
             }
+
+            if (Vector2.Distance(smoothDelta, deltaTarget) > 0.01f)
+            {
+                smoothDelta += 8.0f * Time.deltaTime * (deltaTarget - smoothDelta);
+                actions.look?.Invoke(smoothDelta);
+            }
+
+            deltaTarget = Vector2.zero;
             #endregion
 
+            var keys = Keyboard.current;
             var gamepad = Gamepad.current;
+
             actions.move?.Invoke(gamepad.leftStick.ReadValue());
             if (gamepad.buttonSouth.isPressed) actions.jump?.Invoke();
             if (gamepad.buttonEast.isPressed) actions.descend?.Invoke();
+            if (gamepad.selectButton.wasPressedThisFrame || keys.escapeKey.wasPressedThisFrame) actions.menu?.Invoke();
+
+            
+         
         }
     }
 }

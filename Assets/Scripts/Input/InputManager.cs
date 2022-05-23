@@ -24,6 +24,7 @@ namespace OpenBlock.Input
 
         public InputActions actions;
         public GameObject touchscreenSpecUI;
+        public Player player;
 
         private ControlMode ctrlMode;
         private IInputHandler handler = null;
@@ -31,7 +32,13 @@ namespace OpenBlock.Input
         protected override void Awake()
         {
             base.Awake();
-            SetControlMode(GetDefaultControlMode());
+            actions.look += player.Look;
+            actions.move += player.Move;
+            actions.place += player.Place;
+            actions.digStart += player.DigStart;
+            actions.digEnd += player.DigEnd;
+            actions.jump += player.Jump;
+            actions.descend += player.Descend;
         }
 
         public static ControlMode GetDefaultControlMode()
@@ -74,14 +81,8 @@ namespace OpenBlock.Input
             return true;
         }
 
-        public bool IsPointerOnUI(int index)
-        {
-            return EventSystem.current.IsPointerOverGameObject(index);
-        }
-
         private void Update()
         {
-            GameManager.Instance.debugText.text = $"{ctrlMode}";
             if (handler != null) handler.HandleInputs(ref actions);
         }
 

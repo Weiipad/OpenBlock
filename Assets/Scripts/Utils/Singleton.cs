@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T: Singleton<T>
+namespace OpenBlock
 {
-    private static T _instance;
-    public static T Instance { get => _instance; }
-    public static T GetInstance() => _instance;
-    protected virtual void Awake()
+    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
-        if (_instance != null && _instance != this)
+        private static T _instance;
+        public static T Instance { get => _instance; }
+        public static T GetInstance() => _instance;
+        protected virtual void Awake()
         {
-            Destroy(gameObject);
-            return;
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _instance = (T)this;
         }
-        _instance = (T)this;
     }
 }

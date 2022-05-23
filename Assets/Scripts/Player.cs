@@ -22,18 +22,6 @@ namespace OpenBlock
         private Vector3Int? targetBlockPos;
         private Vector3Int? readyPlaceBlockPos;
 
-        private void Start()
-        {
-            var input = InputManager.Instance;
-            input.actions.look += Look;
-            input.actions.move += Move;
-            input.actions.place += Place;
-            input.actions.digStart += DigStart;
-            input.actions.digEnd += DigEnd;
-            input.actions.jump += Jump;
-            input.actions.descend += Descend;
-        }
-
         private void Update()
         {
             RaycastChunk();

@@ -1,23 +1,31 @@
+using OpenBlock.Input;
+using OpenBlock.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Settings
+namespace OpenBlock
 {
-    public enum ControlMode
+    public class Settings : CommonSingleton<Settings>
     {
-        TouchScreen, KeyboardAndMouse
-    }
-
-    private ControlMode ctrlMode;
-    public ControlMode controlMode
-    {
-        get => ctrlMode;
-        set
+        public struct InputSettings
         {
-            OnSetControlMode?.Invoke(value);
-            ctrlMode = value;
+            public ControlMode controlMode;
+        }
+
+        public struct UISettings
+        {
+            public int specScreenAdaptation;
+        }
+
+        public InputSettings input;
+        public UISettings ui;
+
+        public Settings()
+        {
+            input.controlMode = InputManager.GetDefaultControlMode();
+            ui.specScreenAdaptation = 0;
         }
     }
-    public System.Action<ControlMode> OnSetControlMode;
+
 }

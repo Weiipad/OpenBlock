@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
@@ -17,7 +18,7 @@ namespace OpenBlock.Input.Handler
             if (mouse.rightButton.wasPressedThisFrame) actions.place?.Invoke();
 
             // TODO: only actives in "InGame" mode
-            actions.look?.Invoke(mouse.delta.ReadValue());
+            if (!EventSystem.current.IsPointerOverGameObject() && Screen.safeArea.Contains(mouse.position.ReadValue())) actions.look?.Invoke(mouse.delta.ReadValue());
 
             var keyboard = Keyboard.current;
             Vector2 movement = Vector2.zero;
@@ -29,6 +30,7 @@ namespace OpenBlock.Input.Handler
 
             if (keyboard.spaceKey.isPressed) actions.jump?.Invoke();
             if (keyboard.leftShiftKey.isPressed) actions.descend?.Invoke();
+            if (keyboard.escapeKey.wasPressedThisFrame) actions.menu?.Invoke();
         }
 
         

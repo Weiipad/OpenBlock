@@ -16,4 +16,9 @@ public class World : MonoBehaviour
         
         throw new System.NotImplementedException();
     }
+
+    public void Tick()
+    {
+
+    }
 }
