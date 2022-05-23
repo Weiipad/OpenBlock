@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using OpenBlock.Serialization.Interfaces;
-
 namespace OpenBlock.Chunks
 {
-    public class BlockInfo : BinaryWritable
+    public class BlockInfo
     {
         public int id;
         public Dictionary<string, Attribute> attributes = new Dictionary<string, Attribute>();

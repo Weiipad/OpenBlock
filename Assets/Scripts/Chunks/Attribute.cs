@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using OpenBlock.Serialization.Interfaces;
-
 namespace OpenBlock.Chunks
 {
-    public struct Attribute : BinaryWritable
+    public struct Attribute
     {
         public enum AttribType : byte
         {

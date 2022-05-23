@@ -5,6 +5,7 @@ using UnityEngine;
 public class Singleton<T> : MonoBehaviour where T: Singleton<T>
 {
     private static T _instance;
+    public static T Instance { get => _instance; }
     public static T GetInstance() => _instance;
     protected virtual void Awake()
     {

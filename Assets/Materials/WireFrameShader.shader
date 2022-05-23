@@ -56,6 +56,8 @@ Shader "Custom/WireFrameShader"
                 sy = step(_LineWidth, i.uv.y);
                 ey = step(i.uv.y, 1 - _LineWidth);
 
+                // clip(sx * );
+
                 return lerp(_Color, fixed4(0, 0, 0, 0), sx * ex * sy * ey);
                 // return (sx || ex || sy || ey) ?  _Color : fixed4(0, 0, 0, 0);
             }
