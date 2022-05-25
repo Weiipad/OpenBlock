@@ -17,6 +17,9 @@ namespace OpenBlock.Input.Handler
             if (mouse.leftButton.wasReleasedThisFrame) actions.digEnd?.Invoke();
             if (mouse.rightButton.wasPressedThisFrame) actions.place?.Invoke();
 
+            
+            actions.select?.Invoke(mouse.scroll.ReadValue().y);
+
             // TODO: only actives in "InGame" mode
             if (!EventSystem.current.IsPointerOverGameObject() && Screen.safeArea.Contains(mouse.position.ReadValue())) actions.look?.Invoke(mouse.delta.ReadValue());
 

@@ -7,6 +7,8 @@ public class SightIndicator : MonoBehaviour
 {
     [SerializeField]
     private Image cross, progress;
+    [SerializeField]
+    private Sprite crossCommon, crossInteract;
 
     private bool onFlashCross = false;
     
@@ -18,10 +20,9 @@ public class SightIndicator : MonoBehaviour
     private IEnumerator CoFlashCross()
     {
         onFlashCross = true;
-        var temp = cross.color;
-        cross.color = Color.gray;
+        cross.sprite = crossInteract;
         yield return new WaitForSeconds(0.1f);
-        cross.color = temp;
+        cross.sprite = crossCommon;
         onFlashCross = false;
     }
     public void SetDigProgress(float value, float max = 1)

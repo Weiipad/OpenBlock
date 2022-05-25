@@ -13,6 +13,7 @@ namespace OpenBlock.Input
         public Action jump;
         public Action descend;
         public Action menu;
+        public Action<float> select;
         public Action any;
     }
 }

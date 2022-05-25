@@ -116,4 +116,14 @@ public class ChunkGO : MonoBehaviour
         indices.AddRange(new int[] { startVertex + 0, startVertex + 2, startVertex + 3 });
 
     }
+
+    private void OnBecameVisible()
+    {
+        Debug.Log("Chunk visibled");
+    }
+
+    private void OnBecameInvisible()
+    {
+        Debug.Log("Chunk invisibled");
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using OpenBlock.Input;
+using OpenBlock.GUI;
 
 namespace OpenBlock
 {
@@ -13,7 +14,7 @@ namespace OpenBlock
         public Material wireframeMaterial;
 
         public WindowManager windowManager;
-
+        public ItemShortcuts itemShortcuts;
         public enum GameStage
         {
             MainMenu, Game, Pause
@@ -25,6 +26,7 @@ namespace OpenBlock
             base.Awake();
             Settings.GetInstance();
             gameStage = GameStage.Game;
+            
         }
 
         private void Start()
@@ -33,6 +35,17 @@ namespace OpenBlock
             input.SetControlMode(Settings.Instance.input.controlMode);
             Cursor.lockState = CursorLockMode.Locked;
             input.actions.menu += OnOpenMenu;
+            input.actions.select += dir =>
+            {
+                if (dir > 0)
+                {
+                    itemShortcuts.Index--;
+                }
+                else if (dir < 0)
+                {
+                    itemShortcuts.Index++;
+                }
+            };
 
             windowManager.onBack += () => SetGameStage(GameStage.Game);
         }
@@ -41,6 +54,15 @@ namespace OpenBlock
         {
             if (gameStage == GameStage.Game) SetGameStage(GameStage.Pause);
             else if (gameStage == GameStage.Pause) SetGameStage(GameStage.Game);
+        }
+
+        public void QuitGame()
+        {
+#if UNITY_EDITOR 
+            UnityEditor.EditorApplication.ExitPlaymode();
+#else
+            Application.Quit();
+#endif
         }
 
         private void SetGameStage(GameStage stage)
