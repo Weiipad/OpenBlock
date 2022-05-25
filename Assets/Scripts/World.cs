@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    private List<Chunk> chunks;
+    private List<Chunk> chunks = new List<Chunk>();
     public void Create()
     {
 

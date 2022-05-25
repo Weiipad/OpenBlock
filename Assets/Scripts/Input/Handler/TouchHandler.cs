@@ -62,7 +62,10 @@ namespace OpenBlock.Input.Handler
                     case TouchPhase.Canceled:
                         if (uiTouch)
                         {
-                            touchIdOnUI.Remove(touch.touchId);
+                            var touchIdx = touchIdOnUI.Find(i => i == touch.touchId);
+                            var last = touchIdOnUI.Count - 1;
+                            touchIdOnUI[touchIdx] = touchIdOnUI[last];
+                            touchIdOnUI.RemoveAt(last);
                         }
                         else
                         {
@@ -103,8 +106,6 @@ namespace OpenBlock.Input.Handler
             if (gamepad.buttonEast.isPressed) actions.descend?.Invoke();
             if (gamepad.selectButton.wasPressedThisFrame || keys.escapeKey.wasPressedThisFrame) actions.menu?.Invoke();
 
-            
-         
         }
     }
 }

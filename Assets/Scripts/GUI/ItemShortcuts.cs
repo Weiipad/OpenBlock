@@ -1,3 +1,4 @@
+using OpenBlock.Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,34 +35,29 @@ namespace OpenBlock.GUI
             itemSlots = new ItemSlot[count];
             for (int i = 0; i < itemSlots.Length; i++)
             {
-                itemSlots[i] = Instantiate(itemSlotPrefab, layout.transform).GetComponent<ItemSlot>();
-
+                itemSlots[i] = Instantiate(itemSlotPrefab).GetComponent<ItemSlot>();
+                itemSlots[i].transform.SetParent(layout.transform);
                 itemSlots[i].idx = i;
                 itemSlots[i].onTap += SetIndex;
             }
-            
         }
 
         private void Start()
         {
             aspect.aspectRatio = count;
-            StartCoroutine(RefreshLayout());
-        }
 
-        private void Update()
-        {
-            GameManager.Instance.debugText.text = $"Shortcut [{idx}] selecting";
-        }
-
-        private IEnumerator RefreshLayout()
-        {
-            layout.gameObject.SetActive(false);
-            for (int i = 0; i < 3; i++) yield return null;
-            layout.gameObject.SetActive(true);
-            for (int i = 0; i < 3; i++) yield return null;
-            layout.gameObject.SetActive(false);
-            for (int i = 0; i < 3; i++) yield return null;
-            layout.gameObject.SetActive(true);
+            var input = InputManager.Instance;
+            input.actions.select += dir =>
+            {
+                if (dir > 0)
+                {
+                    Index--;
+                }
+                else if (dir < 0)
+                {
+                    Index++;
+                }
+            };
         }
 
         public void SetIndex(int index)

@@ -4,53 +4,74 @@ using UnityEngine;
 using UnityEngine.UI;
 using OpenBlock.Input;
 using OpenBlock.GUI;
+using UnityEngine.SceneManagement;
+using OpenBlock.Utils;
+using OpenBlock.File;
 
 namespace OpenBlock
 {
     public class GameManager : Singleton<GameManager>
     {
+        public const float LOADING_MIN_TIME = 0.618f;
+
+        public const int MAIN_MENU_SCENE_INDEX = 1;
+        public const int WORLD_SCENE_INDEX = 2;
+
         public Text debugText;
+        public Dialog dialog;
         public Settings settings;
         public Material wireframeMaterial;
 
         public WindowManager windowManager;
-        public ItemShortcuts itemShortcuts;
+
+        public GameObject loading;
+
+        [System.Serializable]
         public enum GameStage
         {
             MainMenu, Game, Pause
         }
+#if UNITY_EDITOR
+        [SerializeField]
+#endif
         private GameStage gameStage;
+
+        public List<GameObject> layouts;
 
         protected override void Awake()
         {
             base.Awake();
             Settings.GetInstance();
-            gameStage = GameStage.Game;
-            
+            FileManager.GetInstance();
+            LoadScene(MAIN_MENU_SCENE_INDEX);
         }
 
         private void Start()
         {
+#if !UNITY_EDITOR
+            gameStage = GameStage.MainMenu;
+#endif
             var input = InputManager.Instance;
-            input.SetControlMode(Settings.Instance.input.controlMode);
-            Cursor.lockState = CursorLockMode.Locked;
-            input.actions.menu += OnOpenMenu;
-            input.actions.select += dir =>
-            {
-                if (dir > 0)
-                {
-                    itemShortcuts.Index--;
-                }
-                else if (dir < 0)
-                {
-                    itemShortcuts.Index++;
-                }
-            };
+            input.SetControlMode(InputManager.GetDefaultControlMode());
 
-            windowManager.onBack += () => SetGameStage(GameStage.Game);
+            SetGameStage(gameStage);
+            input.actions.menu += OnMenu;
+
+            windowManager.ShowWindow(0);
         }
 
-        public void OnOpenMenu()
+        private void Update()
+        {
+            debugText.text = $"{FileManager.Instance.savePath}";
+        }
+
+        public void ShowDialog(string msg)
+        {
+            dialog.gameObject.SetActive(true);
+            dialog.Show(msg);
+        }
+
+        public void OnMenu()
         {
             if (gameStage == GameStage.Game) SetGameStage(GameStage.Pause);
             else if (gameStage == GameStage.Pause) SetGameStage(GameStage.Game);
@@ -65,18 +86,83 @@ namespace OpenBlock
 #endif
         }
 
+        public void LoadWorld()
+        {
+            Debug.Log("Loading world");
+            SetGameStage(GameStage.Game);
+            StartCoroutine(CoLoadWorld());
+        }
+
+        private IEnumerator CoLoadWorld()
+        {
+            loading.SetActive(true);
+            var startTime = Time.realtimeSinceStartup;
+
+            yield return SwitchScene(MAIN_MENU_SCENE_INDEX, WORLD_SCENE_INDEX);
+
+            yield return new WaitForSecondsRealtime(LOADING_MIN_TIME - (Time.realtimeSinceStartup - startTime));
+            loading.SetActive(false);
+        }
+
+        public void BackToMainMenu()
+        {
+            StartCoroutine(CoBackToMainMenu());
+        }
+
+        private IEnumerator CoBackToMainMenu()
+        {
+            loading.SetActive(true);
+            var startTime = Time.realtimeSinceStartup;
+
+            yield return SwitchScene(WORLD_SCENE_INDEX, MAIN_MENU_SCENE_INDEX);
+
+            yield return new WaitForSecondsRealtime(LOADING_MIN_TIME - (Time.realtimeSinceStartup - startTime));
+
+            loading.SetActive(false);
+            SetGameStage(GameStage.MainMenu);
+            var mainCam = Camera.main.GetComponent<MainCamera>();
+            mainCam.Trace(gameObject);
+            mainCam.StopTrace();
+        }
+
+        private IEnumerator TryUnloadScene(int index)
+        {
+            var scene = SceneManager.GetSceneByBuildIndex(index);
+            if (scene.isLoaded) yield return SceneManager.UnloadSceneAsync(index);
+        }
+
+        private IEnumerator LoadScene(int index)
+        {
+            yield return TryUnloadScene(index);
+            yield return SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
+        }
+
+        private IEnumerator SwitchScene(int from, int to)
+        {
+            yield return TryUnloadScene(from);
+            yield return TryUnloadScene(to);
+            yield return SceneManager.LoadSceneAsync(to, LoadSceneMode.Additive);
+        }
+
         private void SetGameStage(GameStage stage)
         {
             if (stage == GameStage.Game)
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                windowManager.gameObject.SetActive(false);
+                windowManager.Close();
             }
             else if (stage == GameStage.Pause)
             {
                 Cursor.lockState = CursorLockMode.None;
-                windowManager.gameObject.SetActive(true);
+                windowManager.ShowWindow(1);
             }
+            else if (stage == GameStage.MainMenu)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                windowManager.ShowWindow(0);
+            }
+
+            Debug.Log($"Gamestage set to {gameStage}");
             gameStage = stage;
         }
 

@@ -22,23 +22,16 @@ namespace OpenBlock.Input
             RuntimePlatform.GameCoreXboxSeries, RuntimePlatform.PS4, RuntimePlatform.Switch, RuntimePlatform.PS5
         };
 
-        public InputActions actions;
-        public GameObject touchscreenSpecUI;
-        public Player player;
+        public System.Action<ControlMode> onControlModeChanged;
 
-        private ControlMode ctrlMode;
+        public InputActions actions;
+
+        public ControlMode ctrlMode { get; private set; }
         private IInputHandler handler = null;
 
         protected override void Awake()
         {
             base.Awake();
-            actions.look += player.Look;
-            actions.move += player.Move;
-            actions.place += player.Place;
-            actions.digStart += player.DigStart;
-            actions.digEnd += player.DigEnd;
-            actions.jump += player.Jump;
-            actions.descend += player.Descend;
         }
 
         public static ControlMode GetDefaultControlMode()
@@ -58,8 +51,6 @@ namespace OpenBlock.Input
 
         public bool SetControlMode(ControlMode mode)
         {
-            if (mode == ControlMode.Touch) touchscreenSpecUI.SetActive(true);
-            else touchscreenSpecUI.SetActive(false);
             switch (mode)
             {
                 case ControlMode.KeyboardAndMouse:
@@ -69,7 +60,6 @@ namespace OpenBlock.Input
                 case ControlMode.Touch:
                     if (Touchscreen.current == null) return false;
                     handler = new TouchHandler();
-                    
                     break;
                 case ControlMode.Gamepad:
                     if (Gamepad.current == null) return false;
@@ -78,6 +68,7 @@ namespace OpenBlock.Input
             }
 
             ctrlMode = mode;
+            onControlModeChanged?.Invoke(ctrlMode);
             return true;
         }
 
@@ -86,7 +77,6 @@ namespace OpenBlock.Input
             if (handler != null) handler.HandleInputs(ref actions);
         }
 
-        
         private void OnEnable()
         {
             EnhancedTouchSupport.Enable();

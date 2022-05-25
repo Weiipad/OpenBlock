@@ -7,11 +7,33 @@ namespace OpenBlock
 {
     public class WindowManager : MonoBehaviour
     {
-        public System.Action onBack;
-
-        public void OnBackButton()
+        [SerializeField]
+        private GameObject touchBlockPanel;
+        [SerializeField]
+        private List<GameObject> windows;
+        private int current;
+        private void Awake()
         {
-            onBack?.Invoke();
+            current = 0;
+            Close();
+        }
+
+        public void ShowWindow(int index)
+        {
+            if (index >= windows.Count)
+            {
+                Debug.LogError("show window out of range");
+            }
+            windows[current].SetActive(false);
+            windows[index].SetActive(true);
+            current = index;
+            touchBlockPanel.SetActive(true);
+        }
+
+        public void Close()
+        {
+            foreach (var window in windows) window.SetActive(false);
+            touchBlockPanel.SetActive(false);
         }
     }
 }
