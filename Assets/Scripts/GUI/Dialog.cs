@@ -12,18 +12,27 @@ namespace OpenBlock.GUI
         private RectTransform backgroundArea;
         [SerializeField]
         private Text contentText;
+        [SerializeField]
+        private Image progress;
 
-        public void Show(string content)
+        public void Show(string content, float seconds)
         {
             contentText.text = content;
-            StartCoroutine(CoAutoClose());
+            StartCoroutine(CoAutoClose(seconds));
         }
 
-        private IEnumerator CoAutoClose()
+        private IEnumerator CoAutoClose(float seconds)
         {
             if (gameObject.activeSelf)
             {
-                yield return new WaitForSeconds(0.8f);
+                var time = Time.realtimeSinceStartup;
+                var elapsed = 0.0f;
+                while (elapsed < seconds)
+                {
+                    progress.fillAmount = 1.0f - Mathf.Clamp01(elapsed / seconds);
+                    yield return null;
+                    elapsed = Time.realtimeSinceStartup - time;
+                }
                 gameObject.SetActive(false);
             }
         }

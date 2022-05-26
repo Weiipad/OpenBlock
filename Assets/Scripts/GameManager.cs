@@ -62,13 +62,18 @@ namespace OpenBlock
 
         private void Update()
         {
-            debugText.text = $"{FileManager.Instance.savePath}";
+
         }
 
         public void ShowDialog(string msg)
         {
+            ShowDialog(msg, 0.8f);
+        }
+
+        public void ShowDialog(string msg, float seconds)
+        {
             dialog.gameObject.SetActive(true);
-            dialog.Show(msg);
+            dialog.Show(msg, seconds);
         }
 
         public void OnMenu()
