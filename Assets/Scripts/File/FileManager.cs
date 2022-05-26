@@ -25,10 +25,7 @@ namespace OpenBlock.File
         public FileManager()
         {
             savePath = Application.persistentDataPath;
-            if (GetLevelInfo("hello", out LevelInfo info))
-            {
-                Debug.Log($"Read level: {info.levelName}({info.type})");
-            }
+            
         }
 
         public string ReadExternalText(string path)

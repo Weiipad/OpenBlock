@@ -43,7 +43,7 @@ namespace OpenBlock
             base.Awake();
             Settings.GetInstance();
             FileManager.GetInstance();
-            LoadScene(MAIN_MENU_SCENE_INDEX);
+            
         }
 
         private void Start()
@@ -56,7 +56,7 @@ namespace OpenBlock
 
             SetGameStage(gameStage);
             input.actions.menu += OnMenu;
-
+            LoadScene(MAIN_MENU_SCENE_INDEX);
             windowManager.ShowWindow(0);
         }
 
