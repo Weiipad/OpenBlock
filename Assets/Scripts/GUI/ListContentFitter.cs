@@ -6,14 +6,16 @@ using UnityEngine.UI;
 
 namespace OpenBlock.GUI
 {
+    [ExecuteAlways]
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
     public class ListContentFitter : UIBehaviour, ILayoutSelfController
     {
-        [SerializeField]
         private int m_count;
         public int count
         {
             get => m_count;
-            set
+            private set
             {
                 m_count = value;
                 ResetHeight();
@@ -56,9 +58,16 @@ namespace OpenBlock.GUI
             ResetHeight();
         }
 
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            ResetHeight();
+        }
+#endif
         private void ResetHeight()
         {
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, itemHeight * m_count);
+            LayoutRebuilder.MarkLayoutForRebuild(rect);
         }
 
         public void SetLayoutHorizontal()
