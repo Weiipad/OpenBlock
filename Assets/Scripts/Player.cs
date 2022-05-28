@@ -1,4 +1,5 @@
 using OpenBlock.Input;
+using OpenBlock.Terrain;
 using OpenBlock.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace OpenBlock
     public class Player : MonoBehaviour
     {
         #region Inspector
+        [SerializeField]
+        private WorldObj world;
         [SerializeField]
         private SightIndicator sight;
         public float speed = 10;
@@ -49,15 +52,21 @@ namespace OpenBlock
 
         public void RaycastChunk()
         {
-            targetBlockPos = null;
-            readyPlaceBlockPos = null;
             Ray sightRay = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
             if (Physics.Raycast(sightRay, out RaycastHit hit, 10, LayerMask.GetMask("Chunk")))
             {
                 targetBlockPos = MathUtils.GetBlockPos(hit.point, hit.normal);
                 readyPlaceBlockPos = targetBlockPos + MathUtils.AsBlockPos(hit.normal);
 
+                GameManager.Instance.debugText.text = $"{targetBlockPos.Value}\n";
+                GameManager.Instance.debugText.text += world.level.GetBlock(targetBlockPos.Value).ToString();
+
                 BlockIndicator.Draw(targetBlockPos.Value, gameObject.layer, Camera.main);
+            }
+            else
+            {
+                targetBlockPos = null;
+                readyPlaceBlockPos = null;
             }
         }
 

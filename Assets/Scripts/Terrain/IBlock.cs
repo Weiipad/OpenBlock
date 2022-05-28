@@ -7,10 +7,8 @@ using UnityEngine;
 
 namespace OpenBlock.Terrain
 {
-    public interface ILevel
+    public interface IBlock
     {
-        Chunk GetChunk(Vector3Int chunkPos);
-        void SaveChunk(Chunk chunk);
-        BlockState GetBlock(Vector3Int worldBlockPos);
+        void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing);
     }
 }

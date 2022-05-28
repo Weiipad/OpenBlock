@@ -39,7 +39,7 @@ namespace OpenBlock.GUI
         protected override void Start()
         {
             count = transform.childCount;
-            itemHeight = ratioToHeight * Screen.height;
+            
             
         }
 
@@ -66,6 +66,7 @@ namespace OpenBlock.GUI
 #endif
         private void ResetHeight()
         {
+            itemHeight = ratioToHeight * Screen.height;
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, itemHeight * m_count);
             LayoutRebuilder.MarkLayoutForRebuild(rect);
         }

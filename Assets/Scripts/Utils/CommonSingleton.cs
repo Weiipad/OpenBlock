@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenBlock.Utils
+namespace OpenBlock
 {
     public class CommonSingleton<T> where T: CommonSingleton<T>, new()
     {

@@ -10,12 +10,12 @@ namespace OpenBlock.Chunks
     public class Region
     {
         public const int REGION_SIZE = 8;
-        public const int REGION_BLOCK_COUNT = REGION_SIZE * Chunk.CHUNK_SIZE;
+        public const int REGION_BLOCK_COUNT = REGION_SIZE * ChunkData.CHUNK_SIZE;
 
         private int x, y, z;
-        private Chunk[,,] chunks = new Chunk[REGION_SIZE, REGION_SIZE, REGION_SIZE];
+        private ChunkData[,,] chunks = new ChunkData[REGION_SIZE, REGION_SIZE, REGION_SIZE];
 
-        public Chunk this[int x, int y, int z] => GetChunk(x, y, z);
+        public ChunkData this[int x, int y, int z] => GetChunk(x, y, z);
 
         public Region(int x, int y, int z)
         {
@@ -38,7 +38,7 @@ namespace OpenBlock.Chunks
                 int cx = reader.ReadInt32();
                 int cy = reader.ReadInt32();
                 int cz = reader.ReadInt32();
-                chunks[cx, cy, cz] = new Chunk(reader);
+                chunks[cx, cy, cz] = new ChunkData(reader);
             }
         }
 
@@ -54,7 +54,7 @@ namespace OpenBlock.Chunks
             }
             else
             {
-                chunks[cx, cy, cz] = new Chunk();
+                chunks[cx, cy, cz] = new ChunkData();
                 chunks[cx, cy, cz].SetBlock(info, bx, by, bz);
             }
         }
@@ -67,7 +67,7 @@ namespace OpenBlock.Chunks
             return chunks[cx, cy, cz].GetBlock(bx, by, bz);
         }
 
-        public Chunk GetChunk(int x, int y, int z) => chunks[x, y, z];
+        public ChunkData GetChunk(int x, int y, int z) => chunks[x, y, z];
 
         public bool InRegion(int x, int y, int z)
         {
@@ -83,13 +83,13 @@ namespace OpenBlock.Chunks
             int ry = y - this.y * REGION_BLOCK_COUNT;
             int rz = z - this.z * REGION_BLOCK_COUNT;
 
-            int cx = rx / Chunk.CHUNK_SIZE;
-            int cy = ry / Chunk.CHUNK_SIZE;
-            int cz = rz / Chunk.CHUNK_SIZE;
+            int cx = rx / ChunkData.CHUNK_SIZE;
+            int cy = ry / ChunkData.CHUNK_SIZE;
+            int cz = rz / ChunkData.CHUNK_SIZE;
 
-            int bx = rx % Chunk.CHUNK_SIZE;
-            int by = ry % Chunk.CHUNK_SIZE;
-            int bz = rz % Chunk.CHUNK_SIZE;
+            int bx = rx % ChunkData.CHUNK_SIZE;
+            int by = ry % ChunkData.CHUNK_SIZE;
+            int bz = rz % ChunkData.CHUNK_SIZE;
 
             return (cx, cy, cz, bx, by, bz);
         }

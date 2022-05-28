@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace OpenBlock.Chunks
 {
-    public class Chunk
+    public class ChunkData
     {
         public const int CHUNK_SIZE = 16;
 
         private int[,,] terrain = new int[CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE];
         private List<BlockInfo> palette = new List<BlockInfo>();
 
-        public Chunk() { }
+        public ChunkData() { }
 
-        public Chunk(BinaryReader reader)
+        public ChunkData(BinaryReader reader)
         {
             for (int x = 0; x < CHUNK_SIZE; x++)
             {

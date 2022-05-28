@@ -43,7 +43,7 @@ namespace OpenBlock
             base.Awake();
             Settings.GetInstance();
             FileManager.GetInstance();
-            
+            MessageStorage.GetInstance();
         }
 
         private void Start()
@@ -58,11 +58,6 @@ namespace OpenBlock
             input.actions.menu += OnMenu;
             LoadScene(MAIN_MENU_SCENE_INDEX);
             windowManager.ShowWindow(0);
-        }
-
-        private void Update()
-        {
-
         }
 
         public void ShowDialog(string msg)
