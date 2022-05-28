@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenBlock.Terrain
+namespace OpenBlock.Math
 {
-    public enum BlockId: uint
+    public class Conversions
     {
-        Air = 0,
-        RGBBlock = 1,
     }
 }

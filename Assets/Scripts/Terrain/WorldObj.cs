@@ -18,7 +18,7 @@ namespace OpenBlock.Terrain
 
         private void Awake()
         {
-            level = new InMemoryLevel(123456);
+            level = new InMemoryLevel((int)System.DateTimeOffset.Now.ToUnixTimeSeconds());
             chunkObjPool = new List<ChunkObj>();
             activeSplitIdx = 0;
         }

@@ -12,7 +12,7 @@ namespace OpenBlock.Terrain.Blocks
 
         static BlockRegistry()
         {
-            blocks.Add(BlockId.RGB, new RGBBlock());
+            blocks.Add(BlockId.RGBBlock, new RGBBlock());
         }
     }
 }

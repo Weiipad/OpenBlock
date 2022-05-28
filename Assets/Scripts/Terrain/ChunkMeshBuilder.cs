@@ -76,6 +76,14 @@ namespace OpenBlock.Terrain
             if (IsColorBlockExist) subMeshCount += 1;
             if (IsTransparentBlockExist) subMeshCount += 1;
 
+            if (subMeshCount == 0)
+            {
+                opaqueIdx = -1;
+                colorIdx = -1;
+                tranparentIdx = -1;
+                return;
+            }
+
             mesh.vertices = vertices.ToArray();
             mesh.colors = colors.ToArray();
 

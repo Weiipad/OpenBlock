@@ -1,9 +1,7 @@
-﻿using OpenBlock.Terrain.Blocks;
+﻿using OpenBlock.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace OpenBlock.Terrain
@@ -21,7 +19,7 @@ namespace OpenBlock.Terrain
         public static BlockState RGB(Color color)
         {
             var ans = new BlockState();
-            ans.id = BlockId.RGB;
+            ans.id = BlockId.RGBBlock;
             ans.properties = new Dictionary<string, string>();
             ans.properties.Add("RGB", color.ToColorCode().ToString());
             return ans;
@@ -54,7 +52,12 @@ namespace OpenBlock.Terrain
             {
                 foreach (var property in properties)
                 {
-                    builder.Append($"{property.Key}:{property.Value}\n");
+                    if (property.Key == "RGB")
+                    {
+                        Color color = uint.Parse(property.Value).ToColor();
+                        builder.Append($"{property.Key}:({(int)(color.r * 255)},{(int)(color.g * 255)},{(int)(color.b * 255)})");
+                    }
+                    else builder.Append($"{property.Key}:{property.Value}\n");
                 }
             }
             return builder.ToString();

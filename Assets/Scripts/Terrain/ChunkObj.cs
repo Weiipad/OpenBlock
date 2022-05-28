@@ -49,7 +49,6 @@ namespace OpenBlock.Terrain
 
                         if (state.id == BlockId.Air) continue;
 
-
                         var facing = BlockFacing.None;
                         if (x - 1 < 0 || !chunk.ExistBlock(x - 1, y, z)) 
                             facing |= BlockFacing.West;

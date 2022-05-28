@@ -15,14 +15,13 @@ namespace OpenBlock.Terrain
         private int seed;
         private List<Chunk> loadedChunks;
 
-        private Vector2Int samplePosition;
-        private int baseHeight = 20;
+        private Vector2 samplePosition;
         public InMemoryLevel(int randomSeed)
         {
             seed = randomSeed;
             size = new Vector3Int(4, 4, 4);
             loadedChunks = new List<Chunk>(size.x * size.y * size.z);
-            samplePosition = new Vector2Int(seed * size.x * Chunk.SIZE, seed * size.z * Chunk.SIZE);
+            samplePosition = new Vector2(seed * size.x * Chunk.SIZE, seed * size.z * Chunk.SIZE);
         }
 
         public Chunk GetChunk(Vector3Int chunkPos)
@@ -65,19 +64,23 @@ namespace OpenBlock.Terrain
                     int worldX = chunkPos.x * Chunk.SIZE + x;
                     int worldY = chunkPos.y * Chunk.SIZE;
                     int worldZ = chunkPos.z * Chunk.SIZE + z;
-                    int wave = (int)(10.0f * Mathf.PerlinNoise(worldX / (float)Chunk.SIZE, worldZ / (float)Chunk.SIZE));
-                    int worldHeight = 12 + wave;
+                    int worldHeight = GenerateHeight(worldX, 0, worldZ);
                     for (int y = 0; y < Chunk.SIZE && worldY <= worldHeight; y++)
                     {
-                        if (worldY >= worldHeight) 
+                        if (worldY == worldHeight) 
                             chunk.AddBlock(BlockState.RGB(Color.green), new Vector3Int(x, y, z));
-                        else 
+                        else
                             chunk.AddBlock(BlockState.RGB(ColorUtils.BROWN), new Vector3Int(x, y, z));
 
                         worldY = y + chunkPos.y * Chunk.SIZE;
                     }
                 }
             }
+        }
+
+        private int GenerateHeight(int x, int y, int z)
+        {
+            return Mathf.FloorToInt(Mathf.PerlinNoise(x / (float)Chunk.SIZE, z / (float)Chunk.SIZE) * 10.0f + 12);
         }
 
         public void SaveChunk(Chunk chunk)
