@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+
 
 namespace OpenBlock.Terrain
 {
@@ -18,7 +20,10 @@ namespace OpenBlock.Terrain
 
         private void Awake()
         {
-            level = new InMemoryLevel((int)System.DateTimeOffset.Now.ToUnixTimeSeconds());
+            using (var file = System.IO.File.OpenRead("D:\\house.vox"))
+            {
+                level = new VoxLevel(new VoxReader(file));
+            }
             chunkObjPool = new List<ChunkObj>();
             activeSplitIdx = 0;
         }
@@ -28,6 +33,7 @@ namespace OpenBlock.Terrain
             if (level.GetChunk(Vector3Int.zero) is Chunk chunk)
             {
                 var chunkObj = Instantiate(chunkObjPrefab);
+                chunkObj.transform.SetParent(transform);
                 chunkObj.Rebuild(chunk);
                 chunkObjPool.Add(chunkObj);
             }
@@ -66,6 +72,7 @@ namespace OpenBlock.Terrain
                 if (!playerChunkLoaded)
                 {
                     var chunkObj = Instantiate(chunkObjPrefab);
+                    chunkObj.transform.SetParent(transform);
                     chunkObj.Rebuild(chunk);
                     chunkObjPool.Add(chunkObj);
                 }
