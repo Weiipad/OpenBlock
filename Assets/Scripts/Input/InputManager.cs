@@ -22,6 +22,9 @@ namespace OpenBlock.Input
             RuntimePlatform.GameCoreXboxSeries, RuntimePlatform.PS4, RuntimePlatform.Switch, RuntimePlatform.PS5
         };
 
+        [Range(0, 1)]
+        public float lookSensitivity;
+
         public System.Action<ControlMode> onControlModeChanged;
 
         public InputActions actions;

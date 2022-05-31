@@ -22,12 +22,14 @@ public static class MathUtils
         return chunkPos * Chunk.SIZE;
     }
 
-    public static Vector3Int BlockPos2ChunkPos(Vector3Int blockPos)
+    public static Vector3Int BlockPos2ChunkPos(Vector3Int blockPos) => BlockPos2ChunkPos(blockPos.x, blockPos.y, blockPos.z);
+
+    public static Vector3Int BlockPos2ChunkPos(int x, int y, int z)
     {
         return new Vector3Int(
-            Mathf.FloorToInt(blockPos.x / (float)Chunk.SIZE), 
-            Mathf.FloorToInt(blockPos.y / (float)Chunk.SIZE), 
-            Mathf.FloorToInt(blockPos.z / (float)Chunk.SIZE)
+            Mathf.FloorToInt(x / (float)Chunk.SIZE),
+            Mathf.FloorToInt(y / (float)Chunk.SIZE),
+            Mathf.FloorToInt(z / (float)Chunk.SIZE)
         );
     }
 
@@ -37,6 +39,15 @@ public static class MathUtils
         blockPos.y = blockPos.y >= 0 ? blockPos.y : Mathf.Abs(Chunk.SIZE - Mathf.Abs(blockPos.y) % Chunk.SIZE);
         blockPos.z = blockPos.z >= 0 ? blockPos.z : Mathf.Abs(Chunk.SIZE - Mathf.Abs(blockPos.z) % Chunk.SIZE);
         return new Vector3Int(blockPos.x % Chunk.SIZE, blockPos.y % Chunk.SIZE, blockPos.z % Chunk.SIZE);
+    }
+
+    public static Vector3Int InternalPos2BlockPos(int x, int y, int z, Vector3Int chunkPos)
+    {
+        var ans = ChunkPos2BlockPos(chunkPos);
+        ans.x += x;
+        ans.y += y;
+        ans.z += z;
+        return ans;
     }
 
     public static int InternalPos2BlockPos(int iPos, int chunkPos)

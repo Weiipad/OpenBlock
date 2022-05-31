@@ -69,7 +69,7 @@ public class VoxReader
 
     public ChunkHeader ReadHeader()
     {
-        ChunkHeader header = new ChunkHeader();
+        ChunkHeader header = new ChunkHeader();    
         header.chunkId = Encoding.ASCII.GetString(reader.ReadBytes(4));
         header.contentBytes = reader.ReadInt32();
         header.childBytes = reader.ReadInt32();
@@ -116,7 +116,7 @@ public class VoxReader
         for (int i = 0; i < 256; i++)
         {
             RGBA color = ReadColor();
-            if (color.Equals(RGBA.DEFAULT)) break;
+            //if (color.Equals(RGBA.DEFAULT)) break;
             yield return color;
         }
     }

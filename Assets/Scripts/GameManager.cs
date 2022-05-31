@@ -59,7 +59,6 @@ namespace OpenBlock
             LoadScene(MAIN_MENU_SCENE_INDEX);
             windowManager.ShowWindow(0);
         }
-
         public void ShowDialog(string msg)
         {
             ShowDialog(msg, 0.8f);
@@ -131,10 +130,16 @@ namespace OpenBlock
             if (scene.isLoaded) yield return SceneManager.UnloadSceneAsync(index);
         }
 
-        private IEnumerator LoadScene(int index)
+        private IEnumerator CoLoadScene(int index)
         {
             yield return TryUnloadScene(index);
             yield return SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(SceneManager.GetSceneAt(index));
+        }
+
+        private void LoadScene(int index)
+        {
+            StartCoroutine(CoLoadScene(index));
         }
 
         private IEnumerator SwitchScene(int from, int to)
@@ -164,11 +169,6 @@ namespace OpenBlock
 
             Debug.Log($"Gamestage set to {gameStage}");
             gameStage = stage;
-        }
-
-        private void OnPostRender()
-        {
-            debugText.text = "";
         }
     }
 

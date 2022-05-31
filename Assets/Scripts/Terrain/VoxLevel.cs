@@ -7,6 +7,11 @@ namespace OpenBlock.Terrain
 {
     public class VoxLevel : ILevel
     {
+        private readonly static Vector3Int[] NEIBOUR_CHUNK_POS = new Vector3Int[]
+        {
+            Vector3Int.up, Vector3Int.right, Vector3Int.forward, Vector3Int.down, Vector3Int.left,  Vector3Int.back
+        };
+
         // size in chunk position unit.
         private Vector3Int size;
         private List<Chunk> loadedChunks;
@@ -61,6 +66,17 @@ namespace OpenBlock.Terrain
             }
 
             Chunk ch = new Chunk(chunkPos);
+            foreach (var chunk in loadedChunks)
+            {
+                for (int i = 0; i < NEIBOUR_CHUNK_POS.Length; ++i)
+                {
+                    if (chunk.chunkPos == chunkPos + NEIBOUR_CHUNK_POS[i])
+                    {
+                        ch.neighbours[i] = chunk;
+                        chunk.neighbours[(i + 3) % 6] = ch;
+                    }
+                }
+            }
             loadedChunks.Add(ch);
             return ch;
         }

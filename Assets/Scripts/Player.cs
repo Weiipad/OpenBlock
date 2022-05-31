@@ -58,7 +58,7 @@ namespace OpenBlock
                 targetBlockPos = MathUtils.GetBlockPos(hit.point, hit.normal);
                 readyPlaceBlockPos = targetBlockPos + MathUtils.AsBlockPos(hit.normal);
 
-                GameManager.Instance.debugText.text = $"{targetBlockPos.Value}\n";
+                GameManager.Instance.debugText.text = $"{targetBlockPos.Value}\n{MathUtils.BlockPos2ChunkPos(targetBlockPos.Value)}\n";
                 GameManager.Instance.debugText.text += world.level.GetBlock(targetBlockPos.Value).ToString();
 
                 BlockIndicator.Draw(targetBlockPos.Value, gameObject.layer, Camera.main);

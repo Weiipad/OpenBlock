@@ -32,20 +32,29 @@ namespace OpenBlock.Terrain
         #endregion
 
         public const int SIZE = 16;
+        public static readonly Vector3Int CUBE_SIZE = new Vector3Int(SIZE, SIZE, SIZE);
+
+        public const int NEIGHBOUR_COUNT = 6;
+
+        public const int NEIGHBOUR_UP = 0;
+        public const int NEIGHBOUR_RIGHT = 1;
+        public const int NEIGHBOUR_FORWARD = 2;
+        public const int NEIGHBOUR_DOWN = 3;
+        public const int NEIGHBOUR_LEFT = 4;
+        public const int NEIGHBOUR_BACK = 5;
 
         public Vector3Int chunkPos;
 
         private readonly int[,,] indices = new int[16, 16, 16];
         private List<BlockState> blockStates = new List<BlockState>();
 
-        public Chunk up, down, left, right, forward, back;
+        public Chunk[] neighbours = new Chunk[NEIGHBOUR_COUNT];
 
         public Chunk(Vector3Int chunkPos)
         {
             this.chunkPos = chunkPos;
             blockStates.Add(BlockState.AIR);
         }
-
         private bool IsLastSameBlock(int idx)
         {
             for (int x = 0; x < SIZE; x++)
@@ -60,7 +69,6 @@ namespace OpenBlock.Terrain
             }
             return true;
         }
-
         private void RemovePalette(int idx)
         {
             if (idx == 0) return;
@@ -82,7 +90,33 @@ namespace OpenBlock.Terrain
 
             blockStates.RemoveAt(lastIdx);
         }
+        public void SetNeighbour(int neighbourIndex, Chunk neighbour)
+        {
+            neighbours[neighbourIndex] = neighbour;
+        }
+        public void Reset()
+        {
+            for (int i = 0; i < NEIGHBOUR_COUNT; ++i)
+            {
+                neighbours[i] = null;
+            }
 
+            for (int x = 0; x < SIZE; ++x)
+            {
+                for (int y = 0; y < SIZE; ++y)
+                {
+                    for (int z = 0; z < SIZE; ++z)
+                    {
+                        indices[x, y, z] = 0;
+                    }
+                }
+            }
+        }
+        public void ClearPalette()
+        {
+            blockStates.Clear();
+            blockStates.Add(BlockState.AIR);
+        }
         public void RemoveBlock(Vector3Int pos)
         {
             if (indices[pos.x, pos.y, pos.z] == 0) return;
@@ -92,20 +126,34 @@ namespace OpenBlock.Terrain
             }
         }
 
-        public bool ExistBlock(Vector3Int pos)
+        public bool ExistBlockInternal(Vector3Int pos) => ExistBlockInternal(pos.x, pos.y, pos.z);
+
+        public bool ExistBlockInternal(int x, int y, int z)
         {
-            return ExistBlock(pos.x, pos.y, pos.z);
+            var blockPos = MathUtils.InternalPos2BlockPos(x, y, z, chunkPos);
+            if (Contains(blockPos)) return indices[x, y, z] != 0;
+            foreach (Chunk neighbour in neighbours)
+            {
+                if (neighbour == null) continue;
+                if (neighbour.Contains(blockPos)) return neighbour.ExistBlock(blockPos);
+            }
+            return false;
         }
 
-        public bool ExistBlock(int x, int y, int z)
+        public bool ExistBlock(Vector3Int blockPos)
         {
-            return indices[x, y, z] != 0;
+            return ExistBlockInternal(blockPos - chunkPos * SIZE);
+        }
+
+        public bool Contains(Vector3Int blockPos)
+        {
+            var origin = MathUtils.ChunkPos2BlockPos(chunkPos);
+            return MathUtils.IsInCuboid(origin, origin + CUBE_SIZE - Vector3Int.one, blockPos);
         }
 
         public BlockState GetBlock(Vector3Int pos)
         {
-            if (pos.x < 0 || pos.y < 0 || pos.z < 0) return null;
-            if (pos.x >= SIZE || pos.y >= SIZE || pos.z >= SIZE) return null;
+            if (!MathUtils.IsInCuboid(Vector3Int.zero, CUBE_SIZE, pos)) return null;
 
             return blockStates[indices[pos.x, pos.y, pos.z]];
         }

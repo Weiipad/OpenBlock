@@ -92,7 +92,7 @@ namespace OpenBlock.Input.Handler
             if (Vector2.Distance(smoothDelta, deltaTarget) > 0.01f)
             {
                 smoothDelta += 8.0f * Time.deltaTime * (deltaTarget - smoothDelta);
-                actions.look?.Invoke(smoothDelta);
+                actions.look?.Invoke(InputManager.Instance.lookSensitivity * smoothDelta);
             }
 
             deltaTarget = Vector2.zero;

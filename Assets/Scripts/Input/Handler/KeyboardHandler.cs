@@ -21,7 +21,8 @@ namespace OpenBlock.Input.Handler
             actions.select?.Invoke(mouse.scroll.ReadValue().y);
 
             // TODO: only actives in "InGame" mode
-            if (!EventSystem.current.IsPointerOverGameObject() && Screen.safeArea.Contains(mouse.position.ReadValue())) actions.look?.Invoke(mouse.delta.ReadValue());
+            if (!EventSystem.current.IsPointerOverGameObject() && Screen.safeArea.Contains(mouse.position.ReadValue())) 
+                actions.look?.Invoke(InputManager.Instance.lookSensitivity * mouse.delta.ReadValue());
 
             var keyboard = Keyboard.current;
             Vector2 movement = Vector2.zero;

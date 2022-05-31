@@ -11,6 +11,7 @@ namespace OpenBlock.Terrain
     {
         public List<Vector3> vertices;
         public List<Color> colors;
+        public List<Vector2> texCoords;
 
         public int VertexCount => vertices.Count;
 
@@ -23,17 +24,29 @@ namespace OpenBlock.Terrain
         {
             vertices = new List<Vector3>();
             colors = new List<Color>();
+            texCoords = new List<Vector2>();
         }
 
         public void AddVertex(Vector3 vertex)
         {
-            AddVertex(vertex, Color.black);
+            AddVertex(vertex, default, default);
         }
 
         public void AddVertex(Vector3 vertex, Color color)
         {
+            AddVertex(vertex, color, default);
+        }
+
+        public void AddVertex(Vector3 vertex, Vector2 texCoord)
+        {
+            AddVertex(vertex, default, texCoord);
+        }
+
+        public void AddVertex(Vector3 vertex, Color color, Vector2 texCoord)
+        {
             vertices.Add(vertex);
             colors.Add(color);
+            texCoords.Add(texCoord);
         }
 
         public void AddIndices(BlockRenderType type, params int[] indices)
@@ -86,6 +99,7 @@ namespace OpenBlock.Terrain
 
             mesh.vertices = vertices.ToArray();
             mesh.colors = colors.ToArray();
+            
 
             mesh.subMeshCount = subMeshCount;
             int subMeshIndex = 0;

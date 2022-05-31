@@ -50,22 +50,22 @@ namespace OpenBlock.Terrain
                         if (state.id == BlockId.Air) continue;
 
                         var facing = BlockFacing.None;
-                        if (x - 1 < 0 || !chunk.ExistBlock(x - 1, y, z)) 
+                        if (!chunk.ExistBlockInternal(x - 1, y, z)) 
                             facing |= BlockFacing.West;
 
-                        if (x + 1 >= Chunk.SIZE || !chunk.ExistBlock(x + 1, y, z)) 
+                        if (!chunk.ExistBlockInternal(x + 1, y, z)) 
                             facing |= BlockFacing.East;
 
-                        if (y - 1 < 0 || !chunk.ExistBlock(x, y - 1, z)) 
+                        if (!chunk.ExistBlockInternal(x, y - 1, z)) 
                             facing |= BlockFacing.Down;
 
-                        if (y + 1 >= Chunk.SIZE || !chunk.ExistBlock(x, y + 1, z)) 
+                        if (!chunk.ExistBlockInternal(x, y + 1, z)) 
                             facing |= BlockFacing.Up;
 
-                        if (z - 1 < 0 || !chunk.ExistBlock(x, y, z - 1)) 
+                        if (!chunk.ExistBlockInternal(x, y, z - 1)) 
                             facing |= BlockFacing.South;
 
-                        if (z + 1 >= Chunk.SIZE || !chunk.ExistBlock(x, y, z + 1)) 
+                        if (!chunk.ExistBlockInternal(x, y, z + 1)) 
                             facing |= BlockFacing.North;
 
                         BlockRegistry.blocks[state.id].BuildModel(state, ref meshBuilder, pos, facing);
