@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace OpenBlock.File
+namespace OpenBlock.IO
 {
     public class FileManager : CommonSingleton<FileManager>
     {

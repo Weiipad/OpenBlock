@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace OpenBlock.Terrain
 {
-    public class InMemoryLevel : ILevel
+    public class InMemoryLevel
     {
         // size in chunk position unit.
         private Vector3Int size;

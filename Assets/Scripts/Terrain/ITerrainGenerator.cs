@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenBlock.File
+namespace OpenBlock.Terrain
 {
-    public enum LevelType
+    public interface ITerrainGenerator
     {
-        OpenBlock1, VOX
+        void GenerateTerrain(ref Chunk chunk);
     }
 }

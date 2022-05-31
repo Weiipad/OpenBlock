@@ -52,9 +52,14 @@ namespace OpenBlock.Terrain
 
         public Chunk(Vector3Int chunkPos)
         {
-            this.chunkPos = chunkPos;
-            blockStates.Add(BlockState.AIR);
+            Reset(chunkPos);
         }
+
+        public Chunk()
+        {
+
+        }
+        
         private bool IsLastSameBlock(int idx)
         {
             for (int x = 0; x < SIZE; x++)
@@ -94,7 +99,7 @@ namespace OpenBlock.Terrain
         {
             neighbours[neighbourIndex] = neighbour;
         }
-        public void Reset()
+        public void Reset(Vector3Int chunkPos)
         {
             for (int i = 0; i < NEIGHBOUR_COUNT; ++i)
             {
@@ -111,7 +116,12 @@ namespace OpenBlock.Terrain
                     }
                 }
             }
+
+            this.chunkPos = chunkPos;
+            blockStates.Clear();
+            blockStates.Add(BlockState.AIR);
         }
+
         public void ClearPalette()
         {
             blockStates.Clear();
@@ -183,5 +193,7 @@ namespace OpenBlock.Terrain
                 indices[pos.x, pos.y, pos.z] = idx;
             }
         }
+
+        public bool IsEmpty() => blockStates.Count == 1 && blockStates[0].id == BlockId.Air;
     }
 }

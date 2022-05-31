@@ -6,7 +6,7 @@ using OpenBlock.Input;
 using OpenBlock.GUI;
 using UnityEngine.SceneManagement;
 using OpenBlock.Utils;
-using OpenBlock.File;
+using OpenBlock.IO;
 
 namespace OpenBlock
 {
@@ -72,8 +72,8 @@ namespace OpenBlock
 
         public void OnMenu()
         {
-            if (gameStage == GameStage.Game) SetGameStage(GameStage.Pause);
-            else if (gameStage == GameStage.Pause) SetGameStage(GameStage.Game);
+            if (gameStage == GameStage.Pause) SetGameStage(GameStage.Game);
+            else SetGameStage(GameStage.Pause);
         }
 
         public void QuitGame()

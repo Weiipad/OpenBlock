@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-
+using OpenBlock.Terrain.Generators;
 
 namespace OpenBlock.Terrain
 {
@@ -14,18 +14,32 @@ namespace OpenBlock.Terrain
         private Transform playerTransform;
 
 
-        public ILevel level { get; private set; }
+        // public ILevel level { get; private set; }
+        public Level level { get; private set; }
         private List<ChunkObj> chunkObjPool;
-        private int activeSplitIdx;
 
         private void Awake()
         {
-            using (var file = System.IO.File.OpenRead("D:\\house.vox"))
-            {
-                level = new VoxLevel(new VoxReader(file));
-            }
+            level = new Level(new StandardGenerator(System.DateTime.Now.Ticks));
+            level.onChunkLoaded += OnChunkLoad;
             chunkObjPool = new List<ChunkObj>();
-            activeSplitIdx = 0;
+        }
+
+        public void OnChunkLoad(Chunk chunk)
+        {
+            foreach (var neighbour in chunk.neighbours)
+            {
+                if (neighbour != null)
+                {
+                    foreach (var chunkObj in chunkObjPool)
+                    {
+                        if (chunkObj.chunkPos == neighbour.chunkPos)
+                        {
+                            chunkObj.Rebuild(neighbour);
+                        }
+                    }
+                }
+            }
         }
 
         private void Start()
@@ -77,6 +91,11 @@ namespace OpenBlock.Terrain
                     chunkObjPool.Add(chunkObj);
                 }
             }
+        }
+
+        private void OnDisable()
+        {
+            level.onChunkLoaded -= OnChunkLoad;
         }
     }
 }
