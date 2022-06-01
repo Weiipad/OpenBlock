@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenBlock.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,36 +31,57 @@ namespace OpenBlock.Terrain.Blocks
         {
             if (facing == BlockFacing.None) return;
 
-            int south = BlockBuildHelper.UV_FORWARD;
+            int[] sideIndices = new int[] { BlockBuildHelper.UV_FORWARD, BlockBuildHelper.UV_RIGHT, BlockBuildHelper.UV_BACK, BlockBuildHelper.UV_LEFT };
+            int sideOffset = 0;
+
+            if (state.TryGetProperty("dir", out string dirStr))
+            {
+                Direction dir = (Direction)Enum.Parse(typeof(Direction), dirStr);
+                switch (dir)
+                {
+                    case Direction.North:
+                        sideOffset = 0;
+                        break;
+                    case Direction.East:
+                        sideOffset = 3;
+                        break;
+                    case Direction.South:
+                        sideOffset = 2;
+                        break;
+                    case Direction.West:
+                        sideOffset = 1;
+                        break;
+                }
+            }
 
             if (facing.HasFlag(BlockFacing.West))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[(south + 1) % 6], blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[sideIndices[(3 + sideOffset) % 4]], blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.East))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[(south + 4) % 6], blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[sideIndices[(1 + sideOffset) % 4]], blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.South))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[south], blockPos, Vector3Int.right, Vector3Int.up);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[sideIndices[(2 + sideOffset) % 4]], blockPos, Vector3Int.right, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.North))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[(south + 3) % 6], blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[sideIndices[sideOffset]], blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.Up))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[(south + 5) % 6], blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[BlockBuildHelper.UV_UP], blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
             }
 
             if (facing.HasFlag(BlockFacing.Down))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[(south + 2) % 6], blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
+                BlockBuildHelper.BuildPlane(ref builder, uvIndices[BlockBuildHelper.UV_DOWN], blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
             }
         }
     }

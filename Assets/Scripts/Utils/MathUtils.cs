@@ -5,6 +5,8 @@ using UnityEngine;
 
 public static class MathUtils
 {
+    public static float SqrtTwoOverTwo = Mathf.Sqrt(2) / 2.0f;
+
     public static Vector3Int GetBlockPos(Vector3 point, Vector3 surfaceNormal)
     {
         surfaceNormal.Normalize();
