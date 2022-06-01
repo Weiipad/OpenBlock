@@ -39,7 +39,7 @@ namespace OpenBlock.Terrain
 
         public void AddVertex(Vector3 vertex, Vector2 texCoord)
         {
-            AddVertex(vertex, default, texCoord);
+            AddVertex(vertex, Color.white, texCoord);
         }
 
         public void AddVertex(Vector3 vertex, Color color, Vector2 texCoord)
@@ -74,6 +74,7 @@ namespace OpenBlock.Terrain
         {
             vertices.Clear();
             colors.Clear();
+            texCoords.Clear();
 
             commonIndices = null;
             colorIndices = null;
@@ -99,7 +100,7 @@ namespace OpenBlock.Terrain
 
             mesh.vertices = vertices.ToArray();
             mesh.colors = colors.ToArray();
-            
+            mesh.uv = texCoords.ToArray();
 
             mesh.subMeshCount = subMeshCount;
             int subMeshIndex = 0;

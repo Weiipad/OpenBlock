@@ -13,7 +13,8 @@ namespace OpenBlock.Input.Handler
 {
     public class TouchHandler : IInputHandler
     {
-        private const float PLACE_DIG_DIV_TIME = 0.5f;
+        private const float PLACE_DEC_TIME = 0.2f;
+        private const float DIG_DEC_TIME = 0.5f;
         private List<int> touchIdOnUI = new List<int>();
         private List<int> touchTriggeredDigStart = new List<int>();
         private Vector2 smoothDelta = Vector2.zero;
@@ -27,7 +28,7 @@ namespace OpenBlock.Input.Handler
             foreach (var touch in Touch.activeTouches)
             {
                 bool uiTouch = touchIdOnUI.Contains(touch.touchId);
-                bool digTrig = touch.inProgress && (Time.realtimeSinceStartup - touch.startTime) > PLACE_DIG_DIV_TIME;
+                bool digTrig = touch.inProgress && (Time.realtimeSinceStartup - touch.startTime) > DIG_DEC_TIME;
 
                 if (digTrig && !uiTouch && !touchTriggeredDigStart.Contains(touch.touchId))
                 {
@@ -69,7 +70,7 @@ namespace OpenBlock.Input.Handler
                         }
                         else
                         {
-                            if ((touch.time - touch.startTime) < PLACE_DIG_DIV_TIME)
+                            if ((touch.time - touch.startTime) < PLACE_DEC_TIME)
                             {
                                 actions.place?.Invoke();
                             }

@@ -40,6 +40,8 @@ namespace OpenBlock.GUI
                 itemSlots[i].idx = i;
                 itemSlots[i].onTap += SetIndex;
             }
+
+            SetIndex(0);
         }
 
         private void Start()

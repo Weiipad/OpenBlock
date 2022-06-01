@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 632eb97343c62e745ac39c6e0b3f6c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  opaque: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  opaque: {fileID: 2100000, guid: 119597ff7a4f9a04289753f7f1ec610a, type: 2}
   rgb: {fileID: 2100000, guid: b36497ef65702a74eacf7107d1b29170, type: 2}
   transparent: {fileID: 10652, guid: 0000000000000000f000000000000000, type: 0}
   chunkPos: {x: 0, y: 0, z: 0}

@@ -11,7 +11,7 @@ namespace OpenBlock.Terrain
             Vector3Int.up, Vector3Int.right, Vector3Int.forward, Vector3Int.down, Vector3Int.left,  Vector3Int.back
         };
 
-        public System.Action<Chunk> onChunkLoaded;
+        public System.Action<Chunk> onChunkNeedRebuild;
 
         private Stack<Chunk> recycledChunks;
         private List<Chunk> loadedChunks;
@@ -24,6 +24,18 @@ namespace OpenBlock.Terrain
             this.generator = generator;
         }
 
+        public void CheckChunks()
+        {
+            foreach (var chunk in loadedChunks)
+            {
+                if (chunk.needRebuild)
+                {
+                    onChunkNeedRebuild?.Invoke(chunk);
+                    chunk.needRebuild = false;
+                }
+            }
+        }
+
         public BlockState GetBlock(Vector3Int blockPos)
         {
             if (GetChunk(MathUtils.BlockPos2ChunkPos(blockPos)) is Chunk chunk)
@@ -31,6 +43,22 @@ namespace OpenBlock.Terrain
                 return chunk.GetBlock(MathUtils.BlockPos2InternalPos(blockPos));
             }
             return BlockState.AIR;
+        }
+
+        public void DestroyBlock(Vector3Int blockPos)
+        {
+            if (GetChunk(MathUtils.BlockPos2ChunkPos(blockPos)) is Chunk chunk)
+            {
+                chunk.DestroyBlock(MathUtils.BlockPos2InternalPos(blockPos));
+            }
+        }
+
+        public void AddBlock(BlockState state, Vector3Int blockPos)
+        {
+            if (GetChunk(MathUtils.BlockPos2ChunkPos(blockPos)) is Chunk chunk)
+            {
+                chunk.AddBlock(state, MathUtils.BlockPos2InternalPos(blockPos));
+            }
         }
 
         public Chunk GetChunk(Vector3Int chunkPos)
@@ -75,7 +103,15 @@ namespace OpenBlock.Terrain
             }
             #endregion
             loadedChunks.Add(ch);
-            onChunkLoaded?.Invoke(ch);
+
+            foreach (var neighbour in ch.neighbours)
+            {
+                if (neighbour != null)
+                {
+                    neighbour.needRebuild = true;
+                }
+            }
+            
             return ch;
         }
 

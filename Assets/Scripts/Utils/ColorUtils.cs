@@ -11,6 +11,16 @@ namespace OpenBlock.Utils
     {
         public static Color BROWN = new Color(165 / 255.0f, 42 / 255.0f, 42 / 255.0f);
 
+        public static uint ToColorCode(byte r, byte g, byte b, byte a)
+        {
+            uint ans = 0;
+            ans |= r;
+            ans |= (uint)(g << 8);
+            ans |= (uint)(b << 16);
+            ans |= (uint)(a << 24);
+            return ans;
+        }
+
         public static uint ToColorCode(this Color color)
         {
             byte r = (byte)(color.r * 255.0f);

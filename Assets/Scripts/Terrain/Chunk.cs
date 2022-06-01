@@ -49,10 +49,12 @@ namespace OpenBlock.Terrain
         private List<BlockState> blockStates = new List<BlockState>();
 
         public Chunk[] neighbours = new Chunk[NEIGHBOUR_COUNT];
+        public bool needRebuild = false;
 
         public Chunk(Vector3Int chunkPos)
         {
             Reset(chunkPos);
+            
         }
 
         public Chunk()
@@ -168,6 +170,19 @@ namespace OpenBlock.Terrain
             return blockStates[indices[pos.x, pos.y, pos.z]];
         }
 
+        public void DestroyBlock(Vector3Int pos)
+        {
+            if (!MathUtils.IsInCuboid(Vector3Int.zero, CUBE_SIZE, pos)) return;
+            indices[pos.x, pos.y, pos.z] = 0;
+            needRebuild = true;
+            if (pos.x == 0 && neighbours[NEIGHBOUR_LEFT] != null) neighbours[NEIGHBOUR_LEFT].needRebuild = true;
+            if (pos.x == SIZE - 1 && neighbours[NEIGHBOUR_RIGHT] != null) neighbours[NEIGHBOUR_RIGHT].needRebuild = true;
+            if (pos.y == 0 && neighbours[NEIGHBOUR_DOWN] != null) neighbours[NEIGHBOUR_DOWN].needRebuild = true;
+            if (pos.y == SIZE - 1 && neighbours[NEIGHBOUR_UP] != null) neighbours[NEIGHBOUR_UP].needRebuild = true;
+            if (pos.z == 0 && neighbours[NEIGHBOUR_BACK] != null) neighbours[NEIGHBOUR_BACK].needRebuild = true;
+            if (pos.z == SIZE - 1 && neighbours[NEIGHBOUR_FORWARD] != null) neighbours[NEIGHBOUR_FORWARD].needRebuild = true;
+        }
+
         public void AddBlock(BlockState block, Vector3Int pos)
         {
             int idx = blockStates.FindIndex(state => block.Equals(state));
@@ -177,6 +192,7 @@ namespace OpenBlock.Terrain
                 blockStates.Add(block);
             }
             indices[pos.x, pos.y, pos.z] = idx;
+            needRebuild = true;
         }
 
         public void BatchedAddBlock(BlockState block, params Vector3Int[] positions)
@@ -192,6 +208,7 @@ namespace OpenBlock.Terrain
             {
                 indices[pos.x, pos.y, pos.z] = idx;
             }
+            needRebuild = true;
         }
 
         public bool IsEmpty() => blockStates.Count == 1 && blockStates[0].id == BlockId.Air;

@@ -10,5 +10,10 @@ namespace OpenBlock.Terrain
     {
         Air = 0,
         RGBBlock = 1,
+        Stone = 2,
+        Grass = 3,
+        CraftingTable = 4,
+        TNT = 5,
+        Log = 6,
     }
 }

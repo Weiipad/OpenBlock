@@ -1,3 +1,4 @@
+using OpenBlock.GUI;
 using OpenBlock.Input;
 using OpenBlock.Terrain;
 using OpenBlock.Utils;
@@ -15,12 +16,15 @@ namespace OpenBlock
         private WorldObj world;
         [SerializeField]
         private SightIndicator sight;
+        [SerializeField]
+        private ItemShortcuts itemShortcuts;
         public float speed = 10;
         #endregion
 
         private Vector3 yawPitch;
         private bool digTrigger;
         private float digProgress = 0;
+        private Vector3Int? prevTargetPos;
         private Vector3Int? targetBlockPos;
         private Vector3Int? readyPlaceBlockPos;
 
@@ -44,10 +48,22 @@ namespace OpenBlock
             RaycastChunk();
             if (digTrigger)
             {
-                if (targetBlockPos != null) digProgress += Time.deltaTime;
+                if (targetBlockPos != null && prevTargetPos != null && prevTargetPos.Value == targetBlockPos.Value) digProgress += Time.deltaTime;
                 else digProgress = 0;
-                sight.SetDigProgress(digProgress, 2);
+                
+
+                if (digProgress >= 1 && targetBlockPos != null)
+                {
+                    world.level.DestroyBlock(targetBlockPos.Value);
+                    digProgress = 0;
+                }
+                sight.SetDigProgress(digProgress, 1);
             }
+        }
+
+        private void LateUpdate()
+        {
+            prevTargetPos = targetBlockPos;
         }
 
         public void RaycastChunk()
@@ -65,6 +81,7 @@ namespace OpenBlock
             }
             else
             {
+                DigEnd();
                 targetBlockPos = null;
                 readyPlaceBlockPos = null;
             }
@@ -95,7 +112,42 @@ namespace OpenBlock
 
         public void Place()
         {
-            if (targetBlockPos != null) sight.OnPlaceBlock();
+            if (readyPlaceBlockPos.HasValue)
+            {
+                sight.OnPlaceBlock();
+
+                if (itemShortcuts.Index == 0)
+                {
+                    var stoneState = new BlockState(BlockId.Stone);
+                    world.level.AddBlock(stoneState, readyPlaceBlockPos.Value);
+                }
+                else if (itemShortcuts.Index == 1)
+                {
+                    var craftingTable = new BlockState(BlockId.CraftingTable);
+                    world.level.AddBlock(craftingTable, readyPlaceBlockPos.Value);
+                }
+                else if (itemShortcuts.Index == 2)
+                {
+                    var tnt = new BlockState(BlockId.TNT);
+                    world.level.AddBlock(tnt, readyPlaceBlockPos.Value);
+                }
+                else if (itemShortcuts.Index == 3)
+                {
+                    var log = new BlockState(BlockId.Log);
+                    world.level.AddBlock(log, readyPlaceBlockPos.Value);
+                }
+                else if (itemShortcuts.Index == 4)
+                {
+                    var grass = new BlockState(BlockId.Grass);
+                    world.level.AddBlock(grass, readyPlaceBlockPos.Value);
+                }
+                else if (itemShortcuts.Index == 5)
+                {
+                    var grass = new BlockState(BlockId.Grass);
+                    grass.AddProperty("RGB", $"{ColorUtils.ToColorCode(233, 120, 0, 255)}");
+                    world.level.AddBlock(grass, readyPlaceBlockPos.Value);
+                }
+            }
         }
 
         public void Move(Vector2 movement)

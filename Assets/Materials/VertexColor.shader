@@ -2,6 +2,7 @@ Shader "Custom/VertexColor"
 {
     Properties
     {
+        _MainTex("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
     }
@@ -17,8 +18,11 @@ Shader "Custom/VertexColor"
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
 
+        sampler2D _MainTex;
+
         struct Input
         {
+            float2 uv_MainTex: TEXCOORD0;
             fixed4 color: COLOR;
         };
 
@@ -34,7 +38,8 @@ Shader "Custom/VertexColor"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            o.Albedo = IN.color.rgb;
+            fixed4 color = tex2D(_MainTex, IN.uv_MainTex) * IN.color;
+            o.Albedo = color.rgb;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;

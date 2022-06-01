@@ -11,15 +11,13 @@ namespace OpenBlock.Terrain
         public static BlockState AIR;
         static BlockState()
         {
-            AIR = new BlockState();
-            AIR.id = BlockId.Air;
+            AIR = new BlockState(BlockId.Air);
             AIR.properties = null;
         }
 
         public static BlockState RGB(Color color)
         {
-            var ans = new BlockState();
-            ans.id = BlockId.RGBBlock;
+            var ans = new BlockState(BlockId.RGBBlock);
             ans.properties = new Dictionary<string, string>();
             ans.properties.Add("RGB", color.ToColorCode().ToString());
             return ans;
@@ -28,10 +26,29 @@ namespace OpenBlock.Terrain
         public BlockId id;
         public Dictionary<string, string> properties;
 
+        public BlockState()
+        {
+
+        }
+
+        public BlockState(BlockId id)
+        {
+            this.id = id;
+            properties = null;
+        }
+
+        public void AddProperty(string key, string value)
+        {
+            if (properties == null) properties = new Dictionary<string, string>();
+            properties.Add(key, value);
+        }
+
         public bool Equals(BlockState other)
         {
             if (other.id != id) return false;
             if (other.properties == null && properties == null) return true;
+            if (other.properties != null && properties == null) return false;
+            if (other.properties == null && properties != null) return false;
             if (other.properties.Count != properties.Count) return false;
 
             foreach (var property in other.properties)

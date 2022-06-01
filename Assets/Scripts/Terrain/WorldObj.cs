@@ -20,24 +20,18 @@ namespace OpenBlock.Terrain
 
         private void Awake()
         {
-            level = new Level(new StandardGenerator(System.DateTime.Now.Ticks));
-            level.onChunkLoaded += OnChunkLoad;
+            level = new Level(new StandardGenerator((int)System.DateTime.Now.Ticks));
+            level.onChunkNeedRebuild += OnChunkNeedRebuild;
             chunkObjPool = new List<ChunkObj>();
         }
 
-        public void OnChunkLoad(Chunk chunk)
+        public void OnChunkNeedRebuild(Chunk chunk)
         {
-            foreach (var neighbour in chunk.neighbours)
+            foreach (var chunkObj in chunkObjPool)
             {
-                if (neighbour != null)
+                if (chunkObj.chunkPos == chunk.chunkPos)
                 {
-                    foreach (var chunkObj in chunkObjPool)
-                    {
-                        if (chunkObj.chunkPos == neighbour.chunkPos)
-                        {
-                            chunkObj.Rebuild(neighbour);
-                        }
-                    }
+                    chunkObj.Rebuild(chunk);
                 }
             }
         }
@@ -69,6 +63,11 @@ namespace OpenBlock.Terrain
             CheckAndGenerateChunk(playerChunkPos + Vector3Int.down + Vector3Int.back);
         }
 
+        private void LateUpdate()
+        {
+            level.CheckChunks();
+        }
+
         private void CheckAndGenerateChunk(Vector3Int chunkPos)
         {
             if (level.GetChunk(chunkPos) is Chunk chunk)
@@ -95,7 +94,7 @@ namespace OpenBlock.Terrain
 
         private void OnDisable()
         {
-            level.onChunkLoaded -= OnChunkLoad;
+            level.onChunkNeedRebuild -= OnChunkNeedRebuild;
         }
     }
 }
