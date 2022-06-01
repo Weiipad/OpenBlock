@@ -17,7 +17,7 @@ namespace OpenBlock.Terrain.Blocks
             blocks.Add(BlockId.Grass, new GrassBlock());
             blocks.Add(BlockId.CraftingTable, new CommonBlock(59, 43, 60, 59, 4, 60));
             blocks.Add(BlockId.TNT, new CommonBlock(9, 8, 10));
-            blocks.Add(BlockId.Log, new CommonBlock(21, 20));
+            blocks.Add(BlockId.Log, new PillarBlock(21, 20));
         }
     }
 }

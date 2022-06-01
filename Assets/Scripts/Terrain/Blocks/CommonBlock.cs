@@ -9,12 +9,6 @@ namespace OpenBlock.Terrain.Blocks
 {
     public class CommonBlock : IBlock
     {
-        public const int UV_RIGHT = 0;
-        public const int UV_UP = 1;
-        public const int UV_FORWARD = 2;
-        public const int UV_LEFT = 3;
-        public const int UV_DOWN = 4;
-        public const int UV_BACK = 5;
         private int[] uvIndices = new int[6];
         public CommonBlock(int uvIndex): this(uvIndex, uvIndex, uvIndex) { }
 
@@ -24,19 +18,19 @@ namespace OpenBlock.Terrain.Blocks
 
         public CommonBlock(int rightUV, int upUV, int forwardUV, int leftUV, int downUV, int backUV)
         {
-            uvIndices[UV_RIGHT] = rightUV;
-            uvIndices[UV_UP] = upUV;
-            uvIndices[UV_FORWARD] = forwardUV;
-            uvIndices[UV_LEFT] = leftUV;
-            uvIndices[UV_DOWN] = downUV;
-            uvIndices[UV_BACK] = backUV;
+            uvIndices[BlockBuildHelper.UV_RIGHT] = rightUV;
+            uvIndices[BlockBuildHelper.UV_UP] = upUV;
+            uvIndices[BlockBuildHelper.UV_FORWARD] = forwardUV;
+            uvIndices[BlockBuildHelper.UV_LEFT] = leftUV;
+            uvIndices[BlockBuildHelper.UV_DOWN] = downUV;
+            uvIndices[BlockBuildHelper.UV_BACK] = backUV;
         }
 
         public void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing)
         {
             if (facing == BlockFacing.None) return;
 
-            int south = UV_FORWARD;
+            int south = BlockBuildHelper.UV_FORWARD;
 
             if (facing.HasFlag(BlockFacing.West))
             {

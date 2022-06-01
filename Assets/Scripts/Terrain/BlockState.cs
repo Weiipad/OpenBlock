@@ -43,6 +43,17 @@ namespace OpenBlock.Terrain
             properties.Add(key, value);
         }
 
+        public bool TryGetProperty(string key, out string value)
+        {
+            if (properties == null)
+            {
+                value = null;
+                return false;
+            }
+
+            return properties.TryGetValue(key, out value);
+        }
+
         public bool Equals(BlockState other)
         {
             if (other.id != id) return false;

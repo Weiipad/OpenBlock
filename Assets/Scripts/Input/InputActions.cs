@@ -14,6 +14,7 @@ namespace OpenBlock.Input
         public Action descend;
         public Action menu;
         public Action<float> select;
+        public Action<int> selectItem;
         public Action any;
     }
 }

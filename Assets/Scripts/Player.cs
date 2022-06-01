@@ -27,6 +27,7 @@ namespace OpenBlock
         private Vector3Int? prevTargetPos;
         private Vector3Int? targetBlockPos;
         private Vector3Int? readyPlaceBlockPos;
+        private Vector3? readyPlaceBlockNormal;
 
         private void Start()
         {
@@ -73,6 +74,7 @@ namespace OpenBlock
             {
                 targetBlockPos = MathUtils.GetBlockPos(hit.point, hit.normal);
                 readyPlaceBlockPos = targetBlockPos + MathUtils.AsBlockPos(hit.normal);
+                readyPlaceBlockNormal = hit.normal;
 
                 GameManager.Instance.debugText.text = $"{targetBlockPos.Value}\n{MathUtils.BlockPos2ChunkPos(targetBlockPos.Value)}\n";
                 GameManager.Instance.debugText.text += world.level.GetBlock(targetBlockPos.Value).ToString();
@@ -84,6 +86,7 @@ namespace OpenBlock
                 DigEnd();
                 targetBlockPos = null;
                 readyPlaceBlockPos = null;
+                readyPlaceBlockNormal = null;
             }
         }
 
@@ -134,6 +137,18 @@ namespace OpenBlock
                 else if (itemShortcuts.Index == 3)
                 {
                     var log = new BlockState(BlockId.Log);
+                    if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal.Value, Vector3.right)), 1))
+                    {
+                        log.AddProperty("axis", "X");
+                    }
+                    else if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal.Value, Vector3.forward)), 1))
+                    {
+                        log.AddProperty("axis", "Z");
+                    }
+                    else
+                    {
+                        log.AddProperty("axis", "Y");
+                    }
                     world.level.AddBlock(log, readyPlaceBlockPos.Value);
                 }
                 else if (itemShortcuts.Index == 4)

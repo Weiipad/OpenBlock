@@ -14,8 +14,8 @@ namespace OpenBlock.Terrain.Blocks
             if (facing == BlockFacing.None) return;
 
             
-            Color color = new Color(0.0f, 0.9f, 0.0f, 1.0f);
-            if (state.properties != null && state.properties.TryGetValue("RGB", out string value))
+            Color color = new Color(0.125f, 0.9f, 0.125f, 1.0f);
+            if (state.TryGetProperty("RGB", out string value))
             {
                 uint colorCode = uint.Parse(value);
                 color = new Color((byte)(colorCode >> 0) / 255.0f, (byte)(colorCode >> 8) / 255.0f, (byte)(colorCode >> 16) / 255.0f);

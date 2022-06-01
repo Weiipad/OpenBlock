@@ -35,8 +35,8 @@ namespace OpenBlock.Terrain.Generators
                     {
                         int worldY = chunk.chunkPos.y * Chunk.SIZE + y;
                         if (worldY < 0) chunk.AddBlock(BlockState.RGB(Color.black), new Vector3Int(x, y, z));
-                        else if (worldY < 15) chunk.AddBlock(BlockState.RGB(ColorUtils.BROWN), new Vector3Int(x, y, z));
-                        else if (worldY < 16) chunk.AddBlock(BlockState.RGB(Color.green), new Vector3Int(x, y, z));
+                        else if (worldY < 15) chunk.AddBlock(new BlockState(BlockId.Stone), new Vector3Int(x, y, z));
+                        else if (worldY < 16) chunk.AddBlock(new BlockState(BlockId.Grass), new Vector3Int(x, y, z));
                         else continue;
                     }
                 }

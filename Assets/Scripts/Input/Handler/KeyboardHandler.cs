@@ -32,6 +32,17 @@ namespace OpenBlock.Input.Handler
             if (keyboard.sKey.isPressed) movement.y -= 1;
             actions.move?.Invoke(movement.normalized);
 
+            if (keyboard.digit1Key.wasPressedThisFrame) actions.selectItem?.Invoke(0);
+            if (keyboard.digit2Key.wasPressedThisFrame) actions.selectItem?.Invoke(1);
+            if (keyboard.digit3Key.wasPressedThisFrame) actions.selectItem?.Invoke(2);
+            if (keyboard.digit4Key.wasPressedThisFrame) actions.selectItem?.Invoke(3);
+            if (keyboard.digit5Key.wasPressedThisFrame) actions.selectItem?.Invoke(4);
+            if (keyboard.digit6Key.wasPressedThisFrame) actions.selectItem?.Invoke(5);
+            if (keyboard.digit7Key.wasPressedThisFrame) actions.selectItem?.Invoke(6);
+            if (keyboard.digit8Key.wasPressedThisFrame) actions.selectItem?.Invoke(7);
+            if (keyboard.digit9Key.wasPressedThisFrame) actions.selectItem?.Invoke(8);
+            if (keyboard.digit0Key.wasPressedThisFrame) actions.selectItem?.Invoke(9);
+
             if (keyboard.spaceKey.isPressed) actions.jump?.Invoke();
             if (keyboard.leftShiftKey.isPressed) actions.descend?.Invoke();
             if (keyboard.escapeKey.wasPressedThisFrame) actions.menu?.Invoke();

@@ -9,6 +9,21 @@ namespace OpenBlock.Terrain.Blocks
 {
     public static class BlockBuildHelper
     {
+        public const int UV_RIGHT = 0;
+        public const int UV_UP = 1;
+        public const int UV_FORWARD = 2;
+        public const int UV_LEFT = 3;
+        public const int UV_DOWN = 4;
+        public const int UV_BACK = 5;
+
+        public enum UVDir: byte
+        {
+            Up = 0,
+            Right = 1,
+            Down = 2,
+            Left = 3,
+        }
+
         /*
          * o+b-------------o+a+b
          *  |               /|
@@ -45,17 +60,27 @@ namespace OpenBlock.Terrain.Blocks
             float u = col / (float)TEXTURE_SIZE;
             float v = 1.0f - row / (float)TEXTURE_SIZE;
 
+            var leftBottomUV = new Vector2(u, v - unit);
+            var leftTopUV = new Vector2(u, v);
+            var rightBottomUV = new Vector2(u + unit, v - unit);
+            var rightTopUV = new Vector2(u + unit, v);
+
             int startVertex = builder.VertexCount;
 
-            builder.AddVertex(o, color, new Vector2(u, v - unit));
-            builder.AddVertex(o + a, color, new Vector2(u + unit, v - unit));
-            builder.AddVertex(o + b, color, new Vector2(u, v));
-            builder.AddVertex(o + a + b, color, new Vector2(u + unit, v));
+            builder.AddVertex(o, color, leftBottomUV);
+            builder.AddVertex(o + a, color, rightBottomUV);
+            builder.AddVertex(o + b, color, leftTopUV);
+            builder.AddVertex(o + a + b, color, rightTopUV);
 
             builder.AddIndices(BlockRenderType.Colored, startVertex + 0, startVertex + 3, startVertex + 1, startVertex + 0, startVertex + 2, startVertex + 3);
         }
 
         public static void BuildPlane(ref ChunkMeshBuilder builder, int uvIndex, Vector3 o, Vector3 a, Vector3 b)
+        {
+            BuildPlane(ref builder, uvIndex, 0, o, a, b);
+        }
+
+        public static void BuildPlane(ref ChunkMeshBuilder builder, int uvIndex, UVDir uvDir, Vector3 o, Vector3 a, Vector3 b)
         {
             const int TEXTURE_SIZE = 16;
 
@@ -66,13 +91,22 @@ namespace OpenBlock.Terrain.Blocks
             
             float u = col / (float)TEXTURE_SIZE;
             float v = 1.0f - row / (float)TEXTURE_SIZE;
-            
+
+            var texCoords = new Vector2[4];
+
+            texCoords[0] = new Vector2(u, v - unit);
+            texCoords[1] = new Vector2(u + unit, v - unit);
+            texCoords[2] = new Vector2(u + unit, v);
+            texCoords[3] = new Vector2(u, v);
+
+            var offset = (byte)uvDir;
+
             int startVertex = builder.VertexCount;
 
-            builder.AddVertex(o, new Vector2(u, v - unit));
-            builder.AddVertex(o + a, new Vector2(u + unit, v - unit));
-            builder.AddVertex(o + b, new Vector2(u, v));
-            builder.AddVertex(o + a + b, new Vector2(u + unit, v));
+            builder.AddVertex(o, texCoords[offset % 4]);
+            builder.AddVertex(o + a, texCoords[(1 + offset) % 4]);
+            builder.AddVertex(o + b, texCoords[(3 + offset) % 4]);
+            builder.AddVertex(o + a + b, texCoords[(2 + offset) % 4]);
 
             builder.AddIndices(BlockRenderType.Opaque, startVertex + 0, startVertex + 3, startVertex + 1, startVertex + 0, startVertex + 2, startVertex + 3);
         }

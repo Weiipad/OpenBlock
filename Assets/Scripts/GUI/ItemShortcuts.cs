@@ -49,17 +49,25 @@ namespace OpenBlock.GUI
             aspect.aspectRatio = count;
 
             var input = InputManager.Instance;
-            input.actions.select += dir =>
+            input.actions.select += OnSelect;
+            input.actions.selectItem += OnSelectItem;
+        }
+
+        private void OnSelect(float dir)
+        {
+            if (dir > 0)
             {
-                if (dir > 0)
-                {
-                    Index--;
-                }
-                else if (dir < 0)
-                {
-                    Index++;
-                }
-            };
+                Index--;
+            }
+            else if (dir < 0)
+            {
+                Index++;
+            }
+        }
+
+        private void OnSelectItem(int idx)
+        {
+            Index = idx;
         }
 
         public void SetIndex(int index)
@@ -69,6 +77,13 @@ namespace OpenBlock.GUI
             if (idx != -1) itemSlots[idx].Deselect();
             idx = index;
             itemSlots[idx].Select();
+        }
+
+        private void OnDisable()
+        {
+            var input = InputManager.Instance;
+            input.actions.select -= OnSelect;
+            input.actions.selectItem -= OnSelectItem;
         }
     }
 }
