@@ -12,7 +12,6 @@ namespace OpenBlock.Terrain.Blocks
         public void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing)
         {
             if (facing == BlockFacing.None) return;
-            if (state.id != BlockId.RGBBlock) throw new Exception("Not RGB Block");
 
             uint colorCode = uint.Parse(state.properties["RGB"]);
             Color color = new Color((byte)(colorCode >> 0) / 255.0f, (byte)(colorCode >> 8) / 255.0f, (byte)(colorCode >> 16) / 255.0f);

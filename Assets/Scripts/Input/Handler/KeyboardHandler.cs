@@ -13,16 +13,20 @@ namespace OpenBlock.Input.Handler
         {
             var mouse = Mouse.current;
 
-            if (mouse.leftButton.wasPressedThisFrame) actions.digStart?.Invoke();
-            if (mouse.leftButton.wasReleasedThisFrame) actions.digEnd?.Invoke();
-            if (mouse.rightButton.wasPressedThisFrame) actions.place?.Invoke();
+            bool isPointerOnUI = EventSystem.current.IsPointerOverGameObject();
 
-            
-            actions.select?.Invoke(mouse.scroll.ReadValue().y);
+            if (!isPointerOnUI)
+            {
+                if (mouse.leftButton.wasPressedThisFrame) actions.digStart?.Invoke();
+                if (mouse.leftButton.wasReleasedThisFrame) actions.digEnd?.Invoke();
+                if (mouse.rightButton.wasPressedThisFrame) actions.place?.Invoke();
+
+                actions.select?.Invoke(mouse.scroll.ReadValue().y);
+            }
 
             // TODO: only actives in "InGame" mode
-            if (!EventSystem.current.IsPointerOverGameObject() && Screen.safeArea.Contains(mouse.position.ReadValue())) 
-                actions.look?.Invoke(InputManager.Instance.lookSensitivity * mouse.delta.ReadValue());
+            if (!isPointerOnUI && Screen.safeArea.Contains(mouse.position.ReadValue())) 
+                actions.look?.Invoke(GameManager.Instance.settings.input.sensitivity * mouse.delta.ReadValue());
 
             var keyboard = Keyboard.current;
             Vector2 movement = Vector2.zero;

@@ -19,12 +19,13 @@ namespace OpenBlock
 
         public Text debugText;
         public Dialog dialog;
-        public Settings settings;
+        public Settings settings { get; private set; }
         public Material wireframeMaterial;
 
-        public WindowManager windowManager;
-
         public GameObject loading;
+
+        public PanelManager menuPanelManager;
+        public BasePanel mainMenuPanel, pausePanel;
 
         [System.Serializable]
         public enum GameStage
@@ -41,7 +42,7 @@ namespace OpenBlock
         protected override void Awake()
         {
             base.Awake();
-            Settings.GetInstance();
+            settings = new Settings();
             FileManager.GetInstance();
             MessageStorage.GetInstance();
         }
@@ -54,10 +55,8 @@ namespace OpenBlock
             var input = InputManager.Instance;
             input.SetControlMode(InputManager.GetDefaultControlMode());
 
-            SetGameStage(gameStage);
             input.actions.menu += OnMenu;
             LoadScene(MAIN_MENU_SCENE_INDEX);
-            windowManager.ShowWindow(0);
         }
         public void ShowDialog(string msg)
         {
@@ -72,11 +71,19 @@ namespace OpenBlock
 
         public void OnMenu()
         {
-            if (gameStage == GameStage.Pause) SetGameStage(GameStage.Game);
-            else SetGameStage(GameStage.Pause);
+            if (gameStage == GameStage.Game)
+            {
+                menuPanelManager.OpenPanel(pausePanel, PanelManager.OpenMode.Replace);
+                SetGameStage(GameStage.Pause);
+            }
+            else if (gameStage == GameStage.Pause)
+            {
+                menuPanelManager.CloseCurrentPanel();
+                SetGameStage(GameStage.Game);
+            }
         }
 
-        public void QuitGame()
+        public void ExitGame()
         {
 #if UNITY_EDITOR 
             UnityEditor.EditorApplication.ExitPlaymode();
@@ -88,7 +95,6 @@ namespace OpenBlock
         public void LoadWorld()
         {
             Debug.Log("Loading world");
-            SetGameStage(GameStage.Game);
             StartCoroutine(CoLoadWorld());
         }
 
@@ -101,6 +107,7 @@ namespace OpenBlock
 
             yield return new WaitForSecondsRealtime(LOADING_MIN_TIME - (Time.realtimeSinceStartup - startTime));
             loading.SetActive(false);
+            SetGameStage(GameStage.Game);
         }
 
         public void BackToMainMenu()
@@ -118,10 +125,11 @@ namespace OpenBlock
             yield return new WaitForSecondsRealtime(LOADING_MIN_TIME - (Time.realtimeSinceStartup - startTime));
 
             loading.SetActive(false);
-            SetGameStage(GameStage.MainMenu);
             var mainCam = Camera.main.GetComponent<MainCamera>();
             mainCam.Trace(gameObject);
             mainCam.StopTrace();
+
+            menuPanelManager.OpenPanel(mainMenuPanel);
         }
 
         private IEnumerator TryUnloadScene(int index)
@@ -149,26 +157,22 @@ namespace OpenBlock
             yield return SceneManager.LoadSceneAsync(to, LoadSceneMode.Additive);
         }
 
-        private void SetGameStage(GameStage stage)
+        public void SetGameStage(GameStage stage)
         {
             if (stage == GameStage.Game)
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                windowManager.Close();
             }
             else if (stage == GameStage.Pause)
             {
                 Cursor.lockState = CursorLockMode.None;
-                windowManager.ShowWindow(1);
             }
             else if (stage == GameStage.MainMenu)
             {
                 Cursor.lockState = CursorLockMode.None;
-                windowManager.ShowWindow(0);
             }
-
-            Debug.Log($"Gamestage set to {gameStage}");
             gameStage = stage;
+            Debug.Log($"Gamestage set to {gameStage}");
         }
     }
 

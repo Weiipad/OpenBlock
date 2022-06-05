@@ -1032,10 +1032,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 821951035}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea1657e961be7f947ae23e90420a52ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 3181cd5c27482b74f832d43f7f11ddc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenAdapt: 75
 --- !u!1 &872936607
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,3 +2005,10 @@ MonoBehaviour:
   count: 6
   layout: {fileID: 1486772416}
   itemSlotPrefab: {fileID: 5293982691377205410, guid: a5a7df30bbc60344f89c5d8d390ca934, type: 3}
+  tempItemIcons:
+  - {fileID: 833901503699236630, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}
+  - {fileID: -2376477302910893472, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}
+  - {fileID: 7206506014209503652, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}
+  - {fileID: 8515524678039004613, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}
+  - {fileID: -1597950182203819753, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}
+  - {fileID: -3915806374996481251, guid: fb32ebd4f394df24288e514e1342e1c1, type: 3}

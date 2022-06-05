@@ -32,15 +32,13 @@ namespace OpenBlock.GUI
         }
         [SerializeField]
         [Range(0, 1)]
-        private float ratioToHeight;
+        private float ratioOfItemToHeight;
 
 
         private float itemHeight;
         protected override void Start()
         {
             count = transform.childCount;
-            
-            
         }
 
         private void OnTransformChildrenChanged()
@@ -66,7 +64,7 @@ namespace OpenBlock.GUI
 #endif
         private void ResetHeight()
         {
-            itemHeight = ratioToHeight * Screen.height;
+            itemHeight = ratioOfItemToHeight * Screen.height;
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, itemHeight * m_count);
             LayoutRebuilder.MarkLayoutForRebuild(rect);
         }

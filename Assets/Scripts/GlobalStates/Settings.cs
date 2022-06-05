@@ -6,16 +6,18 @@ using UnityEngine;
 
 namespace OpenBlock
 {
-    public class Settings : CommonSingleton<Settings>
+    public class Settings
     {
         public struct InputSettings
         {
             public ControlMode controlMode;
+            public float sensitivity;
         }
 
         public struct UISettings
         {
-            public int specScreenAdaptation;
+            public float leftOffset;
+            public float rightOffset;
         }
 
         public InputSettings input;
@@ -24,7 +26,18 @@ namespace OpenBlock
         public Settings()
         {
             input.controlMode = InputManager.GetDefaultControlMode();
-            ui.specScreenAdaptation = 0;
+
+
+            input.sensitivity = PlayerPrefs.GetFloat("input.sensitivity", 1.0f);
+            ui.leftOffset = PlayerPrefs.GetFloat("ui.leftOffset", 75.0f);
+            ui.rightOffset = PlayerPrefs.GetFloat("ui.rightOffset", 75.0f);
+        }
+
+        public void Save()
+        {
+            PlayerPrefs.SetFloat("input.sensitivity", input.sensitivity);
+            PlayerPrefs.SetFloat("ui.leftOffset", ui.leftOffset);
+            PlayerPrefs.SetFloat("ui.rightOffset", ui.rightOffset);
         }
     }
 

@@ -20,7 +20,7 @@ namespace OpenBlock.Terrain
 
         private void Awake()
         {
-            level = new Level(new StandardGenerator((int)System.DateTime.Now.Ticks));
+            level = new Level(new StandardGenerator(0));
             level.onChunkNeedRebuild += OnChunkNeedRebuild;
             chunkObjPool = new List<ChunkObj>();
         }
