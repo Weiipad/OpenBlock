@@ -37,8 +37,6 @@ namespace OpenBlock
 #endif
         private GameStage gameStage;
 
-        public List<GameObject> layouts;
-
         protected override void Awake()
         {
             base.Awake();
@@ -155,6 +153,11 @@ namespace OpenBlock
             yield return TryUnloadScene(from);
             yield return TryUnloadScene(to);
             yield return SceneManager.LoadSceneAsync(to, LoadSceneMode.Additive);
+        }
+
+        public void SetDebugText(bool value)
+        {
+            debugText.gameObject.SetActive(value);
         }
 
         public void SetGameStage(GameStage stage)

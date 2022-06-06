@@ -7,7 +7,7 @@ namespace OpenBlock.GUI.Panels
     public class OptionsPanel : BasePanel
     {
         [SerializeField]
-        private BasePanel controlOptPanel, displayOptPanel, aboutPanel;
+        private BasePanel controlOptPanel, displayOptPanel, debugOptPanel, aboutPanel;
         [SerializeField]
         private PanelManager optPanelManager;
 
@@ -35,6 +35,14 @@ namespace OpenBlock.GUI.Panels
             if (isChecked)
             {
                 optPanelManager.OpenPanel(displayOptPanel, PanelManager.OpenMode.Replace);
+            }
+        }
+
+        public void OnDebugTab(bool isChecked)
+        {
+            if (isChecked)
+            {
+                optPanelManager.OpenPanel(debugOptPanel, PanelManager.OpenMode.Replace);
             }
         }
 

@@ -18,6 +18,16 @@ public class BasePanel : MonoBehaviour
     public virtual void OnResume() { }
     public virtual void OnExit() { }
 
+    protected virtual void OnEnable()
+    {
+        OnResume();
+    }
+
+    protected virtual void OnDisable()
+    {
+        OnPause();
+    }
+
     protected void OpenPanel(BasePanel panel, OpenMode mode)
     {
         manager.OpenPanel(panel, mode);

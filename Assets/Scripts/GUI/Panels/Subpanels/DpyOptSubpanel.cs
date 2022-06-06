@@ -16,6 +16,14 @@ namespace OpenBlock.GUI.Panels
             leftOffset.SetValue(settings.ui.leftOffset);
             rightOffset.SetValue(settings.ui.rightOffset);
         }
+
+        public override void OnPause()
+        {
+            base.OnPause();
+            GameManager.Instance.settings.ui.leftOffset = leftOffset.GetValue();
+            GameManager.Instance.settings.ui.rightOffset = rightOffset.GetValue();
+        }
+
         public void OnLeftOffsetValueChanged(float value)
         {
             var gm = GameManager.Instance;

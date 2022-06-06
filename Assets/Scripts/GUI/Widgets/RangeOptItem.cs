@@ -49,9 +49,15 @@ public class RangeOptItem : MonoBehaviour
         UpdateChildren();
     }
 
+    public void OnNumberInput(string numberStr)
+    {
+        SetValue(float.Parse(numberStr));
+    }
+
+    public float GetValue() => curValue;
+
     private void UpdateChildren()
     {
-        
         numInput.text = curValue.ToString();
         numSilde.value = curValue;
     }

@@ -15,9 +15,17 @@ namespace OpenBlock.GUI.Panels
             sensitivity.SetValue(settings.input.sensitivity);
         }
 
+        public override void OnPause()
+        {
+            base.OnPause();
+            GameManager.Instance.settings.input.sensitivity = sensitivity.GetValue();
+        }
+
         public void OnSensitivityChanged(float value)
         {
             GameManager.Instance.settings.input.sensitivity = value;
         }
+
+        
     }
 }

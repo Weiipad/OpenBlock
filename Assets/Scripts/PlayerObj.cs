@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.OnScreen;
 
 namespace OpenBlock
 {
-    public class Player : MonoBehaviour
+    public class PlayerObj : MonoBehaviour
     {
         #region Inspector
         [SerializeField]
