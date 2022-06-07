@@ -7,6 +7,7 @@ using OpenBlock.GUI;
 using UnityEngine.SceneManagement;
 using OpenBlock.Utils;
 using OpenBlock.IO;
+using OpenBlock.Core.Event;
 
 namespace OpenBlock
 {
@@ -20,6 +21,7 @@ namespace OpenBlock
         public Text debugText;
         public Dialog dialog;
         public Settings settings { get; private set; }
+        public EventQueue eventQueue { get; private set; }
         public Material wireframeMaterial;
 
         public GameObject loading;
@@ -37,10 +39,12 @@ namespace OpenBlock
 #endif
         private GameStage gameStage;
 
+        #region Unity Events
         protected override void Awake()
         {
             base.Awake();
             settings = new Settings();
+            eventQueue = new EventQueue();
             FileManager.GetInstance();
             MessageStorage.GetInstance();
         }
@@ -56,6 +60,14 @@ namespace OpenBlock
             input.actions.menu += OnMenu;
             LoadScene(MAIN_MENU_SCENE_INDEX);
         }
+
+        private void Update()
+        {
+            eventQueue.HandleEvents();
+        }
+        #endregion
+
+
         public void ShowDialog(string msg)
         {
             ShowDialog(msg, 0.8f);
@@ -159,6 +171,8 @@ namespace OpenBlock
         {
             debugText.gameObject.SetActive(value);
         }
+
+        public GameStage GetGameStage() => gameStage;
 
         public void SetGameStage(GameStage stage)
         {

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace OpenBlock.Terrain.Blocks
+namespace OpenBlock.Terrain.BlockModels
 {
-    public static class BlockBuildHelper
+    public static class BlockModelBuildHelper
     {
         public const int UV_RIGHT = 0;
         public const int UV_UP = 1;

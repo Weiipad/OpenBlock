@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace OpenBlock.Terrain.Blocks
+namespace OpenBlock.Terrain.BlockModels
 {
-    public class GrassBlock : IBlock
+    public class GrassBlockModel : IBlockModel
     {
         public void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing)
         {
@@ -23,32 +23,32 @@ namespace OpenBlock.Terrain.Blocks
 
             if (facing.HasFlag(BlockFacing.West))
             {
-                BlockBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.East))
             {
-                BlockBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.South))
             {
-                BlockBuildHelper.BuildPlane(ref builder, 3, blockPos, Vector3Int.right, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, 3, blockPos, Vector3Int.right, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.North))
             {
-                BlockBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, 3, blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.Up))
             {
-                BlockBuildHelper.BuildColoredPlane(ref builder, 0, color, blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
+                BlockModelBuildHelper.BuildColoredPlane(ref builder, 0, color, blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
             }
 
             if (facing.HasFlag(BlockFacing.Down))
             {
-                BlockBuildHelper.BuildPlane(ref builder, 2, blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
+                BlockModelBuildHelper.BuildPlane(ref builder, 2, blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
             }
         }
     }

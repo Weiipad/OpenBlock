@@ -1,4 +1,4 @@
-using OpenBlock.Terrain.Blocks;
+using OpenBlock.Terrain.BlockModels;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -68,7 +68,7 @@ namespace OpenBlock.Terrain
                         if (!chunk.ExistBlockInternal(x, y, z + 1)) 
                             facing |= BlockFacing.North;
 
-                        BlockRegistry.blocks[state.id].BuildModel(state, ref meshBuilder, pos, facing);
+                        BlockRegistry.blockModels[state.id].BuildModel(state, ref meshBuilder, pos, facing);
                     }
                 }
             }

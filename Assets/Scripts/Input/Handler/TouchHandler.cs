@@ -1,10 +1,8 @@
-﻿using System.Collections;
+﻿using OpenBlock.Core.Event.PlayerControl;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
-using UnityEngine.InputSystem.Utilities;
 
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
@@ -22,7 +20,7 @@ namespace OpenBlock.Input.Handler
 
         public void HandleInputs(ref InputActions actions)
         {
-            InputManager input = InputManager.Instance;
+            var eventQueue = GameManager.Instance.eventQueue;
 
             #region Handle Fingers
             foreach (var touch in Touch.activeTouches)
@@ -32,7 +30,7 @@ namespace OpenBlock.Input.Handler
 
                 if (digTrig && !uiTouch && !touchTriggeredDigStart.Contains(touch.touchId))
                 {
-                    actions.digStart?.Invoke();
+                    eventQueue.SendEvent(new DigEvent(DigEvent.Phase.Start));
                     touchTriggeredDigStart.Add(touch.touchId);
                 }
 
@@ -72,11 +70,11 @@ namespace OpenBlock.Input.Handler
                         {
                             if ((touch.time - touch.startTime) < PLACE_DEC_TIME)
                             {
-                                actions.place?.Invoke();
+                                eventQueue.SendEvent(new PlaceEvent());
                             }
                             else
                             {
-                                actions.digEnd?.Invoke();
+                                eventQueue.SendEvent(new DigEvent(DigEvent.Phase.End));
                                 touchTriggeredDigStart.Remove(touch.touchId);
                             }
                             smoothDelta *= 0.05f;
@@ -93,7 +91,7 @@ namespace OpenBlock.Input.Handler
             if (Vector2.Distance(smoothDelta, deltaTarget) > 0.01f)
             {
                 smoothDelta += 8.0f * Time.deltaTime * (deltaTarget - smoothDelta);
-                actions.look?.Invoke(GameManager.Instance.settings.input.sensitivity * smoothDelta);
+                eventQueue.SendEvent(new LookEvent(GameManager.Instance.settings.input.sensitivity * smoothDelta));
             }
 
             deltaTarget = Vector2.zero;
@@ -102,9 +100,9 @@ namespace OpenBlock.Input.Handler
             var keys = Keyboard.current;
             var gamepad = Gamepad.current;
 
-            actions.move?.Invoke(gamepad.leftStick.ReadValue());
-            if (gamepad.buttonSouth.isPressed) actions.jump?.Invoke();
-            if (gamepad.buttonEast.isPressed) actions.descend?.Invoke();
+            eventQueue.SendEvent(new MoveEvent(gamepad.leftStick.ReadValue()));
+            if (gamepad.buttonSouth.isPressed) eventQueue.SendEvent(new JumpEvent());
+            if (gamepad.buttonEast.isPressed) eventQueue.SendEvent(new DescendEvent());
             if (gamepad.selectButton.wasPressedThisFrame || keys.escapeKey.wasPressedThisFrame) actions.menu?.Invoke();
 
         }

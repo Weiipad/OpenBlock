@@ -7,6 +7,7 @@ namespace OpenBlock.GUI
     [RequireComponent(typeof(RectTransform))]
     public class HUD : MonoBehaviour
     {
+        
         private void Awake()
         {
         }

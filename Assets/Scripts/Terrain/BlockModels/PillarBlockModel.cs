@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static OpenBlock.Terrain.Blocks.BlockBuildHelper;
+using static OpenBlock.Terrain.BlockModels.BlockModelBuildHelper;
 
-namespace OpenBlock.Terrain.Blocks
+namespace OpenBlock.Terrain.BlockModels
 {
-    public class PillarBlock : IBlock
+    public class PillarBlockModel : IBlockModel
     {
         private int sideIndex, coreIndex;
-        public PillarBlock(int coreIndex, int sideIndex)
+        public PillarBlockModel(int coreIndex, int sideIndex)
         {
             this.sideIndex = sideIndex;
             this.coreIndex = coreIndex;
@@ -57,32 +57,32 @@ namespace OpenBlock.Terrain.Blocks
 
             if (facing.HasFlag(BlockFacing.West))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_LEFT], uvDirs[UV_LEFT], blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_LEFT], uvDirs[UV_LEFT], blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.East))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_RIGHT], uvDirs[UV_RIGHT], blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_RIGHT], uvDirs[UV_RIGHT], blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.South))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_BACK], uvDirs[UV_BACK], blockPos, Vector3Int.right, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_BACK], uvDirs[UV_BACK], blockPos, Vector3Int.right, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.North))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_FORWARD], uvDirs[UV_FORWARD], blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_FORWARD], uvDirs[UV_FORWARD], blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.Up))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_UP], uvDirs[UV_UP], blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_UP], uvDirs[UV_UP], blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
             }
 
             if (facing.HasFlag(BlockFacing.Down))
             {
-                BlockBuildHelper.BuildPlane(ref builder, uvIndices[UV_DOWN], uvDirs[UV_DOWN], blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
+                BlockModelBuildHelper.BuildPlane(ref builder, uvIndices[UV_DOWN], uvDirs[UV_DOWN], blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
 
             }
         }

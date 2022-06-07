@@ -1,13 +1,12 @@
+using OpenBlock.Core.Event;
+using OpenBlock.Core.Event.PlayerControl;
 using OpenBlock.GUI;
 using OpenBlock.Input;
 using OpenBlock.Terrain;
 using OpenBlock.Utils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.OnScreen;
 
-namespace OpenBlock
+namespace OpenBlock.Entity.Player
 {
     public class PlayerObj : MonoBehaviour
     {
@@ -42,16 +41,57 @@ namespace OpenBlock
 
         private void Start()
         {
-            var input = InputManager.Instance;
-            input.actions.look += Look;
-            input.actions.move += Move;
-            input.actions.place += Place;
-            input.actions.digStart += DigStart;
-            input.actions.digEnd += DigEnd;
-            input.actions.jump += Jump;
-            input.actions.descend += Descend;
+            //var input = InputManager.Instance;
+            //input.actions.look += Look;
+            //input.actions.move += Move;
+            //input.actions.place += Place;
+            //input.actions.digStart += DigStart;
+            //input.actions.digEnd += DigEnd;
+            //input.actions.jump += Jump;
+            //input.actions.descend += Descend;
+
+            GameManager.Instance.eventQueue.RegisterHandler(GameEventType.PlayerControl, OnPlayerControl);
 
             Camera.main.GetComponent<MainCamera>().Trace(gameObject);
+        }
+
+        public void OnPlayerControl(IGameEvent control)
+        {
+            if (GameManager.Instance.GetGameStage() != GameManager.GameStage.Game) return;
+
+            switch (control)
+            {
+                case LookEvent look:
+                    Look(look.delta);
+                    break;
+
+                case MoveEvent move:
+                    Move(move.direction);
+                    break;
+
+                case JumpEvent _:
+                    Jump();
+                    break;
+
+                case DescendEvent _:
+                    Descend();
+                    break;
+
+                case PlaceEvent _:
+                    Place();
+                    break;
+
+                case DigEvent dig:
+                    if (dig.phase == DigEvent.Phase.Start)
+                    {
+                        DigStart();
+                    }
+                    else
+                    {
+                        DigEnd();
+                    }
+                    break;
+            }
         }
 
         private void Update()
@@ -229,14 +269,16 @@ namespace OpenBlock
 
         private void OnDestroy()
         {
-            var input = InputManager.Instance;
-            input.actions.look -= Look;
-            input.actions.move -= Move;
-            input.actions.place -= Place;
-            input.actions.digStart -= DigStart;
-            input.actions.digEnd -= DigEnd;
-            input.actions.jump -= Jump;
-            input.actions.descend -= Descend;
+            //var input = InputManager.Instance;
+            //input.actions.look -= Look;
+            //input.actions.move -= Move;
+            //input.actions.place -= Place;
+            //input.actions.digStart -= DigStart;
+            //input.actions.digEnd -= DigEnd;
+            //input.actions.jump -= Jump;
+            //input.actions.descend -= Descend;
+
+            GameManager.Instance.eventQueue.RemoveHandler(GameEventType.PlayerControl, OnPlayerControl);
         }
     }
 

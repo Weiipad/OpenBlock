@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace OpenBlock.Terrain
 {
-    public interface IBlock
+    public interface IBlockModel
     {
         void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing);
     }

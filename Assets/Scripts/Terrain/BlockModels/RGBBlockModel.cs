@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace OpenBlock.Terrain.Blocks
+namespace OpenBlock.Terrain.BlockModels
 {
-    public class RGBBlock : IBlock
+    public class RGBBlockModel : IBlockModel
     {
         public void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing)
         {
@@ -19,32 +19,32 @@ namespace OpenBlock.Terrain.Blocks
 
             if (facing.HasFlag(BlockFacing.West))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.forward, Vector3Int.back, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.East))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.right, Vector3Int.forward, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.South))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos, Vector3Int.right, Vector3Int.up);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos, Vector3Int.right, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.North))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.right + Vector3Int.forward, Vector3Int.left, Vector3Int.up);
             }
 
             if (facing.HasFlag(BlockFacing.Up))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.up, Vector3Int.right, Vector3Int.forward);
             }
 
             if (facing.HasFlag(BlockFacing.Down))
             {
-                BlockBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
+                BlockModelBuildHelper.BuildRGBPlane(ref builder, color, blockPos + Vector3Int.forward, Vector3Int.right, Vector3Int.back);
             }
         }
     }
