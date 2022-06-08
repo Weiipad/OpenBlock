@@ -21,39 +21,42 @@ namespace OpenBlock.Terrain.BlockModels
 
         public void BuildModel(BlockState state, ref ChunkMeshBuilder builder, Vector3 blockPos, BlockFacing facing)
         {
-            if (state.properties == null) throw new Exception("Wrong block" + state.id);
-
             int[] uvIndices = new int[6];
             UVDir[] uvDirs = new UVDir[6];
-
+            Axis axis;
             if (state.TryGetProperty("axis", out Property prop))
             {
-                Axis axis = (Axis)prop.GetByte();
-                switch (axis)
-                {
-                    case Axis.X:
-                        uvIndices[UV_LEFT] = uvIndices[UV_RIGHT] = coreIndex;
-                        uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = uvIndices[UV_UP] = uvIndices[UV_DOWN] = sideIndex;
-                        uvDirs[UV_LEFT] = uvDirs[UV_RIGHT] = UVDir.Up;
-                        uvDirs[UV_FORWARD] = UVDir.Left;
-                        uvDirs[UV_DOWN] = uvDirs[UV_UP] = uvDirs[UV_BACK] = UVDir.Right;
-                        break;
-                    case Axis.Y:
-                        uvIndices[UV_UP] = uvIndices[UV_DOWN] = coreIndex;
-                        uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = uvIndices[UV_RIGHT] = uvIndices[UV_LEFT] = sideIndex;
-                        uvDirs[UV_DOWN] = uvDirs[UV_UP] = UVDir.Up;
-                        uvDirs[UV_DOWN] = uvDirs[UV_FORWARD] = uvDirs[UV_UP] = uvDirs[UV_BACK] = UVDir.Up;
-                        break;
-                    case Axis.Z:
-                        uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = coreIndex;
-                        uvIndices[UV_UP] = uvIndices[UV_DOWN] = uvIndices[UV_RIGHT] = uvIndices[UV_LEFT] = sideIndex;
-                        uvDirs[UV_FORWARD] = uvDirs[UV_BACK] = UVDir.Up;
-                        uvDirs[UV_RIGHT] = UVDir.Right;
-                        uvDirs[UV_LEFT] = UVDir.Left;
-                        uvDirs[UV_UP] = UVDir.Up;
-                        uvDirs[UV_DOWN] = UVDir.Down;
-                        break;
-                }
+                axis = (Axis)prop.GetByte();
+            }
+            else
+            {
+                axis = Axis.Y;
+            }
+
+            switch (axis)
+            {
+                case Axis.X:
+                    uvIndices[UV_LEFT] = uvIndices[UV_RIGHT] = coreIndex;
+                    uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = uvIndices[UV_UP] = uvIndices[UV_DOWN] = sideIndex;
+                    uvDirs[UV_LEFT] = uvDirs[UV_RIGHT] = UVDir.Up;
+                    uvDirs[UV_FORWARD] = UVDir.Left;
+                    uvDirs[UV_DOWN] = uvDirs[UV_UP] = uvDirs[UV_BACK] = UVDir.Right;
+                    break;
+                case Axis.Y:
+                    uvIndices[UV_UP] = uvIndices[UV_DOWN] = coreIndex;
+                    uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = uvIndices[UV_RIGHT] = uvIndices[UV_LEFT] = sideIndex;
+                    uvDirs[UV_DOWN] = uvDirs[UV_UP] = UVDir.Up;
+                    uvDirs[UV_DOWN] = uvDirs[UV_FORWARD] = uvDirs[UV_UP] = uvDirs[UV_BACK] = UVDir.Up;
+                    break;
+                case Axis.Z:
+                    uvIndices[UV_FORWARD] = uvIndices[UV_BACK] = coreIndex;
+                    uvIndices[UV_UP] = uvIndices[UV_DOWN] = uvIndices[UV_RIGHT] = uvIndices[UV_LEFT] = sideIndex;
+                    uvDirs[UV_FORWARD] = uvDirs[UV_BACK] = UVDir.Up;
+                    uvDirs[UV_RIGHT] = UVDir.Right;
+                    uvDirs[UV_LEFT] = UVDir.Left;
+                    uvDirs[UV_UP] = UVDir.Up;
+                    uvDirs[UV_DOWN] = UVDir.Down;
+                    break;
             }
 
             if (facing.HasFlag(BlockFacing.West))

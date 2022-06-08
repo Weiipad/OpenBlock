@@ -11,6 +11,7 @@ namespace OpenBlock.Terrain
         Air = 0,
         RGBBlock,
         Stone,
+        Dirt,
         Grass,
         CraftingTable,
         Furnance,

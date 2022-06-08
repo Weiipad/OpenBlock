@@ -10,100 +10,86 @@ namespace OpenBlock.Terrain
 {
     public class BlockState: IEquatable<BlockState>
     {
+        #region Static Definitions
         public static BlockState AIR;
         static BlockState()
         {
             AIR = new BlockState(BlockId.Air);
-            AIR.properties = null;
         }
 
         public static BlockState RGB(Color color)
         {
             var ans = new BlockState(BlockId.RGBBlock);
-            ans.properties = new Dictionary<string, Property>();
-            ans.properties.Add("RGB", new Property(color.ToColorCode()));
+            ans.AddProperty("RGB", new Property(color.ToColorCode()));
             return ans;
         }
+        #endregion
 
-        public BlockId id;
-        public Dictionary<string, Property> properties;
+        public BlockId id
+        {
+            get
+            {
+                return (BlockId)root.GetUint();
+            }
+        }
+        private Property root;
 
         public BlockState()
         {
-
+            root = new Property((uint)0);
         }
 
         public BlockState(BlockId id)
         {
-            this.id = id;
-            properties = null;
+            root = new Property((uint)id);
         }
 
         public void AddProperty(string key, Property value)
         {
-            if (properties == null) properties = new Dictionary<string, Property>();
-            properties.Add(key, value);
+            root.AddChild(key, value);
         }
 
         public bool TryGetProperty(string key, out Property value)
         {
-            if (properties == null)
-            {
-                value = null;
-                return false;
-            }
-
-            return properties.TryGetValue(key, out value);
+            value = root.GetChild(key);
+            return value != null;
         }
 
         public bool Equals(BlockState other)
         {
-            if (other.id != id) return false;
-            if (other.properties == null && properties == null) return true;
-            if (other.properties != null && properties == null) return false;
-            if (other.properties == null && properties != null) return false;
-            if (other.properties.Count != properties.Count) return false;
-
-            foreach (var property in other.properties)
-            {
-                if (!properties.ContainsKey(property.Key)) return false;
-                if (properties[property.Key] != property.Value) return false;
-            }
-
-            return true;
+            return root == other.root;
         }
 
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append($"{id}\n");
+            builder.Append(id);
+            builder.Append(Environment.NewLine);
 
-            if (properties != null)
+            foreach (var child in root.children)
             {
-                foreach (var property in properties)
+                builder.Append(child.Key);
+                builder.Append(':');
+                if (child.Key == "RGB")
                 {
-                    builder.Append(property.Key);
-                    builder.Append(':');
-                    if (property.Key == "RGB")
-                    {
-                        Color color = property.Value.GetUint().ToColor();
-                        builder.Append($"({(int)(color.r * 255)},{(int)(color.g * 255)},{(int)(color.b * 255)})");
-                    }
-                    else if (property.Key == "dir")
-                    {
-                        builder.Append((Direction)property.Value.GetByte());
-                    }
-                    else if (property.Key == "axis")
-                    {
-                        builder.Append((Axis)property.Value.GetByte());
-                    }
-                    else
-                    {
-                        builder.Append(property.Value);
-                    }
-                    builder.Append(Environment.NewLine);
+                    Color color = child.Value.GetUint().ToColor();
+                    builder.Append($"({(int)(color.r * 255)},{(int)(color.g * 255)},{(int)(color.b * 255)})");
                 }
+                else if (child.Key == "axis")
+                {
+                    builder.Append((Axis)child.Value.GetByte());
+                }
+                else if (child.Key == "dir")
+                {
+                    builder.Append((Direction)child.Value.GetByte());
+                }
+                else
+                {
+                    builder.Append(child.Value);
+                }    
+                builder.Append(Environment.NewLine);
             }
+
             return builder.ToString();
         }
     }

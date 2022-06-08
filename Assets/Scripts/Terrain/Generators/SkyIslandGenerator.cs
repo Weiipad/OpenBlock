@@ -48,15 +48,15 @@ namespace OpenBlock.Terrain.Generators
                         {
                             if (blockPosY < 0)
                             {
-                                chunk.AddBlock(BlockState.RGB(Color.gray), new Vector3Int(x, y, z));
+                                chunk.AddBlock(new BlockState(BlockId.Stone), new Vector3Int(x, y, z));
                             }
-                            else if (blockPosY < max - 1)
+                            else if (blockPosY < max)
                             {
-                                chunk.AddBlock(BlockState.RGB(ColorUtils.BROWN), new Vector3Int(x, y, z));
+                                chunk.AddBlock(new BlockState(BlockId.Dirt), new Vector3Int(x, y, z));
                             }
                             else
                             {
-                                chunk.AddBlock(BlockState.RGB(Color.green), new Vector3Int(x, y, z));
+                                chunk.AddBlock(new BlockState(BlockId.Grass), new Vector3Int(x, y, z));
                             }
                         }
                     }

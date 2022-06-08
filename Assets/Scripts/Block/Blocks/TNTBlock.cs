@@ -12,7 +12,7 @@ namespace OpenBlock.Block.Blocks
 {
     public class TNTBlock : IUsableBlock
     {
-        public float Hardness => 1;
+        public float Hardness => 0.25f;
 
         public void OnUse(BlockState state)
         {

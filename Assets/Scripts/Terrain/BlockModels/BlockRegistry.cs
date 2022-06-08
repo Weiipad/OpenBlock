@@ -17,6 +17,7 @@ namespace OpenBlock.Terrain.BlockModels
         {
             blockModels.Add(BlockId.RGBBlock, new RGBBlockModel());
             blockModels.Add(BlockId.Stone, new CommonBlockModel(1));
+            blockModels.Add(BlockId.Dirt, new CommonBlockModel(2));
             blockModels.Add(BlockId.Grass, new GrassBlockModel());
             blockModels.Add(BlockId.CraftingTable, new CommonBlockModel(59, 43, 60, 59, 4, 60));
             blockModels.Add(BlockId.Furnance, new CommonBlockModel(45, 62, 44, 45, 62, 45));
@@ -25,6 +26,7 @@ namespace OpenBlock.Terrain.BlockModels
 
             blocks.Add(BlockId.RGBBlock, new CommonBlock(0.5f));
             blocks.Add(BlockId.Stone, new CommonBlock(2.0f));
+            blocks.Add(BlockId.Dirt, new CommonBlock(0.9f));
             blocks.Add(BlockId.Grass, new CommonBlock(1.0f));
             blocks.Add(BlockId.CraftingTable, new CommonBlock(1.5f));
             blocks.Add(BlockId.Furnance, new CommonBlock(2.0f));
