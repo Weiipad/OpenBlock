@@ -1,4 +1,5 @@
-﻿using OpenBlock.Core.Event.HUDRequest;
+﻿using OpenBlock.Core;
+using OpenBlock.Core.Event.HUDRequest;
 using OpenBlock.Entity.Player;
 using OpenBlock.Terrain;
 using System;

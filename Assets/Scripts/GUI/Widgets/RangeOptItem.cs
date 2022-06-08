@@ -44,7 +44,7 @@ public class RangeOptItem : MonoBehaviour
 
     public void SetValue(float value)
     {
-        curValue = value;
+        curValue = (float)System.Math.Round(value, 2);
         onValueChanged?.Invoke(curValue);
         UpdateChildren();
     }

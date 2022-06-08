@@ -1,4 +1,6 @@
-﻿using OpenBlock.Utils;
+﻿using OpenBlock.Math;
+using OpenBlock.Properties;
+using OpenBlock.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,13 +20,13 @@ namespace OpenBlock.Terrain
         public static BlockState RGB(Color color)
         {
             var ans = new BlockState(BlockId.RGBBlock);
-            ans.properties = new Dictionary<string, string>();
-            ans.properties.Add("RGB", color.ToColorCode().ToString());
+            ans.properties = new Dictionary<string, Property>();
+            ans.properties.Add("RGB", new Property(color.ToColorCode()));
             return ans;
         }
 
         public BlockId id;
-        public Dictionary<string, string> properties;
+        public Dictionary<string, Property> properties;
 
         public BlockState()
         {
@@ -37,13 +39,13 @@ namespace OpenBlock.Terrain
             properties = null;
         }
 
-        public void AddProperty(string key, string value)
+        public void AddProperty(string key, Property value)
         {
-            if (properties == null) properties = new Dictionary<string, string>();
+            if (properties == null) properties = new Dictionary<string, Property>();
             properties.Add(key, value);
         }
 
-        public bool TryGetProperty(string key, out string value)
+        public bool TryGetProperty(string key, out Property value)
         {
             if (properties == null)
             {
@@ -80,12 +82,26 @@ namespace OpenBlock.Terrain
             {
                 foreach (var property in properties)
                 {
+                    builder.Append(property.Key);
+                    builder.Append(':');
                     if (property.Key == "RGB")
                     {
-                        Color color = uint.Parse(property.Value).ToColor();
-                        builder.Append($"{property.Key}:({(int)(color.r * 255)},{(int)(color.g * 255)},{(int)(color.b * 255)})");
+                        Color color = property.Value.GetUint().ToColor();
+                        builder.Append($"({(int)(color.r * 255)},{(int)(color.g * 255)},{(int)(color.b * 255)})");
                     }
-                    else builder.Append($"{property.Key}:{property.Value}\n");
+                    else if (property.Key == "dir")
+                    {
+                        builder.Append((Direction)property.Value.GetByte());
+                    }
+                    else if (property.Key == "axis")
+                    {
+                        builder.Append((Axis)property.Value.GetByte());
+                    }
+                    else
+                    {
+                        builder.Append(property.Value);
+                    }
+                    builder.Append(Environment.NewLine);
                 }
             }
             return builder.ToString();

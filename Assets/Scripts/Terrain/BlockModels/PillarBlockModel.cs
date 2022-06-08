@@ -1,4 +1,5 @@
 ﻿using OpenBlock.Math;
+using OpenBlock.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace OpenBlock.Terrain.BlockModels
             int[] uvIndices = new int[6];
             UVDir[] uvDirs = new UVDir[6];
 
-            if (state.TryGetProperty("axis", out string axisStr))
+            if (state.TryGetProperty("axis", out Property prop))
             {
-                Axis axis = (Axis)Enum.Parse(typeof(Axis), axisStr);
+                Axis axis = (Axis)prop.GetByte();
                 switch (axis)
                 {
                     case Axis.X:

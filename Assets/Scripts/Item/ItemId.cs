@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenBlock.Items
+namespace OpenBlock.Item
 {
-    public class Item
+    public enum ItemId
     {
-        public ItemId id;
+        Air = 0,
+        BlockItem,
+        Brush,
     }
 }

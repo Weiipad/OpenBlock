@@ -13,7 +13,7 @@ namespace OpenBlock.Terrain.BlockModels
         {
             if (facing == BlockFacing.None) return;
 
-            uint colorCode = uint.Parse(state.properties["RGB"]);
+            uint colorCode = state.properties["RGB"].GetUint();
             Color color = new Color((byte)(colorCode >> 0) / 255.0f, (byte)(colorCode >> 8) / 255.0f, (byte)(colorCode >> 16) / 255.0f);
 
 

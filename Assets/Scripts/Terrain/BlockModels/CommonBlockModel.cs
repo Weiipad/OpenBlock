@@ -1,4 +1,5 @@
 ﻿using OpenBlock.Math;
+using OpenBlock.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,9 @@ namespace OpenBlock.Terrain.BlockModels
             int[] sideIndices = new int[] { BlockModelBuildHelper.UV_FORWARD, BlockModelBuildHelper.UV_RIGHT, BlockModelBuildHelper.UV_BACK, BlockModelBuildHelper.UV_LEFT };
             int sideOffset = 0;
 
-            if (state.TryGetProperty("dir", out string dirStr))
+            if (state.TryGetProperty("dir", out Property prop))
             {
-                Direction dir = (Direction)Enum.Parse(typeof(Direction), dirStr);
+                Direction dir = (Direction)prop.GetByte();
                 switch (dir)
                 {
                     case Direction.North:

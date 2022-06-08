@@ -13,13 +13,13 @@ namespace OpenBlock.Terrain
 
         public System.Action<Chunk> onChunkNeedRebuild;
 
-        private Stack<Chunk> recycledChunks;
+        private Queue<Chunk> recycledChunks;
         private List<Chunk> loadedChunks;
         private ITerrainGenerator generator;
 
         public Level(ITerrainGenerator generator)
         {
-            recycledChunks = new Stack<Chunk>();
+            recycledChunks = new Queue<Chunk>();
             loadedChunks = new List<Chunk>();
             this.generator = generator;
         }
@@ -80,7 +80,7 @@ namespace OpenBlock.Terrain
             Chunk ch = null;
             if (recycledChunks.Count != 0)
             {
-                ch = recycledChunks.Pop();
+                ch = recycledChunks.Dequeue();
             }
             else
             {

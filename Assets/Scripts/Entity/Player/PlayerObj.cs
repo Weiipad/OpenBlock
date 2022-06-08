@@ -1,8 +1,13 @@
+using OpenBlock.Block;
+using OpenBlock.Core;
 using OpenBlock.Core.Event;
 using OpenBlock.Core.Event.PlayerControl;
 using OpenBlock.GUI;
 using OpenBlock.Input;
+using OpenBlock.Math;
+using OpenBlock.Properties;
 using OpenBlock.Terrain;
+using OpenBlock.Terrain.BlockModels;
 using OpenBlock.Utils;
 using UnityEngine;
 
@@ -100,16 +105,26 @@ namespace OpenBlock.Entity.Player
             RaycastChunk();
             if (digTrigger)
             {
-                if (hasTarget && prevTargetPos == targetBlockPos) digProgress += Time.deltaTime;
-                else digProgress = 0;
-                
-
-                if (digProgress >= 1 && hasTarget)
+                if (hasTarget)
                 {
-                    world.level.DestroyBlock(targetBlockPos);
+                    IBlock block = BlockRegistry.blocks[world.level.GetBlock(targetBlockPos).id];
+                    if (prevTargetPos == targetBlockPos)
+                    {
+                        digProgress += Time.deltaTime;
+                    }
+
+                    if (digProgress >= block.Hardness)
+                    {
+                        world.level.DestroyBlock(targetBlockPos);
+                        digProgress = 0;
+                    }
+
+                    sight.SetDigProgress(digProgress, block.Hardness);
+                }
+                else
+                {
                     digProgress = 0;
                 }
-                sight.SetDigProgress(digProgress, 1);
             }
         }
 
@@ -170,82 +185,17 @@ namespace OpenBlock.Entity.Player
             {
                 sight.OnPlaceBlock();
 
-                if (itemShortcuts.Index == 0)
+                BlockState target = world.level.GetBlock(targetBlockPos);
+
+                if (BlockRegistry.blocks[target.id] is IUsableBlock block)
                 {
-                    var stoneState = new BlockState(BlockId.Stone);
-                    world.level.AddBlock(stoneState, readyPlaceBlockPos);
+                    block.OnUse(target);
                 }
-                else if (itemShortcuts.Index == 1)
+                else
                 {
-                    var craftingTable = new BlockState(BlockId.CraftingTable);
-                    var pDir = placeBlockDirection;;
-                    if (pDir.y > MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
-                    {
-                        craftingTable.AddProperty("dir", "North");
-                    }
-                    else if (pDir.y < -MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
-                    {
-                        craftingTable.AddProperty("dir", "South");
-                    }
-                    else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x > MathUtils.SqrtTwoOverTwo)
-                    {
-                        craftingTable.AddProperty("dir", "East");
-                    }
-                    else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x < -MathUtils.SqrtTwoOverTwo)
-                    {
-                        craftingTable.AddProperty("dir", "West");
-                    }
-                    world.level.AddBlock(craftingTable, readyPlaceBlockPos);
+                    PlanceBlockInHand();
                 }
-                else if (itemShortcuts.Index == 2)
-                {
-                    var tnt = new BlockState(BlockId.TNT);
-                    world.level.AddBlock(tnt, readyPlaceBlockPos);
-                }
-                else if (itemShortcuts.Index == 3)
-                {
-                    var log = new BlockState(BlockId.Log);
-                    if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal, Vector3.right)), 1))
-                    {
-                        log.AddProperty("axis", "X");
-                    }
-                    else if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal, Vector3.forward)), 1))
-                    {
-                        log.AddProperty("axis", "Z");
-                    }
-                    else
-                    {
-                        log.AddProperty("axis", "Y");
-                    }
-                    world.level.AddBlock(log, readyPlaceBlockPos);
-                }
-                else if (itemShortcuts.Index == 4)
-                {
-                    var grass = new BlockState(BlockId.Grass);
-                    world.level.AddBlock(grass, readyPlaceBlockPos);
-                }
-                else if (itemShortcuts.Index == 5)
-                {
-                    var furnance = new BlockState(BlockId.Furnance);
-                    var pDir = placeBlockDirection; ;
-                    if (pDir.y > MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
-                    {
-                        furnance.AddProperty("dir", "North");
-                    }
-                    else if (pDir.y < -MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
-                    {
-                        furnance.AddProperty("dir", "South");
-                    }
-                    else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x > MathUtils.SqrtTwoOverTwo)
-                    {
-                        furnance.AddProperty("dir", "East");
-                    }
-                    else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x < -MathUtils.SqrtTwoOverTwo)
-                    {
-                        furnance.AddProperty("dir", "West");
-                    }
-                    world.level.AddBlock(furnance, readyPlaceBlockPos);
-                }
+                
             }
         }
 
@@ -266,6 +216,86 @@ namespace OpenBlock.Entity.Player
             transform.localRotation = Quaternion.Euler(yawPitch);
         }
         #endregion
+
+        private void PlanceBlockInHand()
+        {
+            if (itemShortcuts.Index == 0)
+            {
+                var stoneState = new BlockState(BlockId.Stone);
+                world.level.AddBlock(stoneState, readyPlaceBlockPos);
+            }
+            else if (itemShortcuts.Index == 1)
+            {
+                var craftingTable = new BlockState(BlockId.CraftingTable);
+                var pDir = placeBlockDirection; ;
+                if (pDir.y > MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
+                {
+                    craftingTable.AddProperty("dir", new Property((byte)Direction.North));
+                }
+                else if (pDir.y < -MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
+                {
+                    craftingTable.AddProperty("dir", new Property((byte)Direction.South));
+                }
+                else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x > MathUtils.SqrtTwoOverTwo)
+                {
+                    craftingTable.AddProperty("dir", new Property((byte)Direction.East));
+                }
+                else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x < -MathUtils.SqrtTwoOverTwo)
+                {
+                    craftingTable.AddProperty("dir", new Property((byte)Direction.West));
+                }
+                world.level.AddBlock(craftingTable, readyPlaceBlockPos);
+            }
+            else if (itemShortcuts.Index == 2)
+            {
+                var tnt = new BlockState(BlockId.TNT);
+                world.level.AddBlock(tnt, readyPlaceBlockPos);
+            }
+            else if (itemShortcuts.Index == 3)
+            {
+                var log = new BlockState(BlockId.Log);
+                if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal, Vector3.right)), 1))
+                {
+                    log.AddProperty("axis", new Property((byte)Axis.X));
+                }
+                else if (Mathf.Approximately(Mathf.Abs(Vector3.Dot(readyPlaceBlockNormal, Vector3.forward)), 1))
+                {
+                    log.AddProperty("axis", new Property((byte)Axis.Z));
+                }
+                else
+                {
+                    log.AddProperty("axis", new Property((byte)Axis.Y));
+                }
+                world.level.AddBlock(log, readyPlaceBlockPos);
+            }
+            else if (itemShortcuts.Index == 4)
+            {
+                var grass = new BlockState(BlockId.Grass);
+                world.level.AddBlock(grass, readyPlaceBlockPos);
+            }
+            else if (itemShortcuts.Index == 5)
+            {
+                var furnance = new BlockState(BlockId.Furnance);
+                var pDir = placeBlockDirection; ;
+                if (pDir.y > MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
+                {
+                    furnance.AddProperty("dir", new Property((byte)Direction.North));
+                }
+                else if (pDir.y < -MathUtils.SqrtTwoOverTwo && Mathf.Abs(pDir.x) < MathUtils.SqrtTwoOverTwo)
+                {
+                    furnance.AddProperty("dir", new Property((byte)Direction.South));
+                }
+                else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x > MathUtils.SqrtTwoOverTwo)
+                {
+                    furnance.AddProperty("dir", new Property((byte)Direction.East));
+                }
+                else if (Mathf.Abs(pDir.y) < MathUtils.SqrtTwoOverTwo && pDir.x < -MathUtils.SqrtTwoOverTwo)
+                {
+                    furnance.AddProperty("dir", new Property((byte)Direction.West));
+                }
+                world.level.AddBlock(furnance, readyPlaceBlockPos);
+            }
+        }
 
         private void OnDestroy()
         {

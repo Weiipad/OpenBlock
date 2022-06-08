@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using OpenBlock.Terrain.Generators;
+using OpenBlock.Entity.Player;
 
 namespace OpenBlock.Terrain
 {
@@ -13,9 +14,8 @@ namespace OpenBlock.Terrain
         [SerializeField]
         private Transform playerTransform;
 
-
-        // public ILevel level { get; private set; }
         public Level level { get; private set; }
+        public PlayerData playerData { get; private set; }
         private List<ChunkObj> chunkObjPool;
 
         private void Awake()

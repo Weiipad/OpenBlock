@@ -8,8 +8,9 @@ using UnityEngine.SceneManagement;
 using OpenBlock.Utils;
 using OpenBlock.IO;
 using OpenBlock.Core.Event;
+using OpenBlock.Core.Event.HUDRequest;
 
-namespace OpenBlock
+namespace OpenBlock.Core
 {
     public class GameManager : Singleton<GameManager>
     {
@@ -46,7 +47,6 @@ namespace OpenBlock
             settings = new Settings();
             eventQueue = new EventQueue();
             FileManager.GetInstance();
-            MessageStorage.GetInstance();
         }
 
         private void Start()
@@ -57,6 +57,8 @@ namespace OpenBlock
             var input = InputManager.Instance;
             input.SetControlMode(InputManager.GetDefaultControlMode());
 
+            eventQueue.RegisterHandler(GameEventType.HUDRequest, HandleDialogEvent);
+
             input.actions.menu += OnMenu;
             LoadScene(MAIN_MENU_SCENE_INDEX);
         }
@@ -65,7 +67,20 @@ namespace OpenBlock
         {
             eventQueue.HandleEvents();
         }
+
+        private void OnDestroy()
+        {
+            eventQueue.RemoveHandler(GameEventType.HUDRequest, HandleDialogEvent);
+        }
         #endregion
+
+        public void HandleDialogEvent(IGameEvent e)
+        {
+            if (e is OpenDialogEvent dialog)
+            {
+                ShowDialog(dialog.msg);
+            }
+        }
 
 
         public void ShowDialog(string msg)

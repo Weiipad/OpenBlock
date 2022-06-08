@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenBlock.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,9 @@ namespace OpenBlock.Terrain.BlockModels
 
             
             Color color = new Color(0.125f, 0.9f, 0.125f, 1.0f);
-            if (state.TryGetProperty("RGB", out string value))
+            if (state.TryGetProperty("RGB", out Property prop))
             {
-                uint colorCode = uint.Parse(value);
+                uint colorCode = prop.GetUint();
                 color = new Color((byte)(colorCode >> 0) / 255.0f, (byte)(colorCode >> 8) / 255.0f, (byte)(colorCode >> 16) / 255.0f);
             }
 
